@@ -872,7 +872,7 @@ async function callGemini(prompt) {
   const key = localStorage.getItem('aniforge_gemini_key');
   if (!key) throw new Error('No Gemini API key. Add it in the panel.');
 
-  const res = await fetch(`https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash-latest:generateContent?key=${key}`, {
+  const res = await fetch(`https://generativelanguage.googleapis.com/v1/models/gemini-2.0-flash-exp:generateContent?key=${key}`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
