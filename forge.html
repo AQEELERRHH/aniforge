@@ -82,14 +82,12 @@
     letter-spacing: 1px;
   }
 
-  /* MAIN LAYOUT */
   .forge-layout {
     display: grid;
     grid-template-columns: 380px 1fr;
     min-height: calc(100vh - 65px);
   }
 
-  /* LEFT PANEL */
   .forge-panel {
     background: var(--steel);
     border-right: 1px solid rgba(255,255,255,0.06);
@@ -186,7 +184,6 @@
 
   .scene-btn.active { background: var(--ember); border-color: var(--ember); color: white; }
 
-  /* API KEYS SECTION */
   .api-section {
     margin-top: 1.5rem;
     padding: 1.2rem;
@@ -230,9 +227,26 @@
     font-size: 0.75rem;
     letter-spacing: 1px;
     transition: background 0.2s;
+    margin-bottom: 0.5rem;
   }
 
   .api-save-btn:hover { background: rgba(0,212,255,0.2); }
+
+  .api-test-btn {
+    width: 100%;
+    background: rgba(255,215,0,0.1);
+    border: 1px solid rgba(255,215,0,0.3);
+    color: var(--gold);
+    padding: 0.5rem;
+    border-radius: 4px;
+    cursor: pointer;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.75rem;
+    letter-spacing: 1px;
+    transition: background 0.2s;
+  }
+
+  .api-test-btn:hover { background: rgba(255,215,0,0.2); }
 
   .api-status {
     font-size: 0.7rem;
@@ -242,7 +256,19 @@
     letter-spacing: 1px;
   }
 
-  /* FORGE BUTTON */
+  .debug-log {
+    margin-top: 1rem;
+    padding: 0.8rem;
+    background: rgba(0,0,0,0.4);
+    border-radius: 4px;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.65rem;
+    max-height: 150px;
+    overflow-y: auto;
+    color: #00ff88;
+    line-height: 1.5;
+  }
+
   .forge-btn {
     width: 100%;
     background: linear-gradient(135deg, var(--ember), var(--ember2));
@@ -262,13 +288,11 @@
   .forge-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(255,77,28,0.6); }
   .forge-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
 
-  /* RIGHT PANEL */
   .forge-output {
     padding: 2.5rem 3rem;
     overflow-y: auto;
   }
 
-  /* IDLE STATE */
   .idle-state {
     display: flex;
     flex-direction: column;
@@ -297,11 +321,7 @@
     margin-bottom: 0.5rem;
   }
 
-  /* PROGRESS */
-  .progress-section {
-    display: none;
-  }
-
+  .progress-section { display: none; }
   .progress-section.active { display: block; }
 
   .progress-bar-wrap {
@@ -348,7 +368,6 @@
     flex-shrink: 0;
   }
 
-  /* RESULT */
   .result-section { display: none; }
   .result-section.active { display: block; }
 
@@ -408,7 +427,6 @@
     margin-bottom: 0.2rem;
   }
 
-  /* CHARACTERS */
   .cast-section { margin-bottom: 3rem; }
 
   .section-label {
@@ -438,7 +456,6 @@
     height: 60px;
     border-radius: 50%;
     margin: 0 auto 0.8rem;
-    object-fit: cover;
     border: 2px solid var(--ember);
     background: linear-gradient(135deg, var(--steel), #2a0a1e);
     display: flex;
@@ -469,7 +486,6 @@
     line-height: 1.4;
   }
 
-  /* SCENES */
   .scenes-section { margin-bottom: 3rem; }
 
   .scene-block {
@@ -553,9 +569,7 @@
 
   @keyframes spin { to { transform: rotate(360deg); } }
 
-  .scene-content {
-    padding: 1.5rem;
-  }
+  .scene-content { padding: 1.5rem; }
 
   .scene-narration {
     font-size: 0.95rem;
@@ -584,7 +598,6 @@
     text-transform: uppercase;
   }
 
-  /* ACTIONS */
   .result-actions {
     display: flex;
     gap: 1rem;
@@ -652,7 +665,7 @@
     transform: translateY(100px);
     opacity: 0;
     transition: transform 0.3s, opacity 0.3s;
-    max-width: 320px;
+    max-width: 400px;
   }
   .toast.show { transform: translateY(0); opacity: 1; }
 
@@ -677,7 +690,6 @@
 
 <div class="forge-layout">
 
-  <!-- LEFT: CONTROLS -->
   <div class="forge-panel">
     <div class="forge-title">⚡ The Forge</div>
     <div class="forge-sub">AI EPISODE GENERATOR</div>
@@ -702,7 +714,6 @@
       <button class="scene-btn" onclick="setScenes(this,7)">7</button>
     </div>
 
-    <!-- API KEYS -->
     <div class="api-section">
       <h4>🔑 API KEYS (saved locally)</h4>
 
@@ -713,23 +724,22 @@
       <input class="api-input" id="hf-key" type="password" placeholder="hf_...">
 
       <button class="api-save-btn" onclick="saveKeys()">💾 Save Keys</button>
+      <button class="api-test-btn" onclick="testGeminiKey()">🧪 Test Gemini Key</button>
       <div class="api-status" id="key-status"></div>
+      <div class="debug-log" id="debug-log" style="display:none;"></div>
     </div>
 
     <button class="forge-btn" id="forge-btn" onclick="forgeEpisode()">⚡ FORGE EPISODE</button>
   </div>
 
-  <!-- RIGHT: OUTPUT -->
   <div class="forge-output">
 
-    <!-- IDLE -->
     <div class="idle-state" id="idle-state">
       <div class="idle-icon">⚡</div>
       <h2>Ready to Forge</h2>
       <p style="opacity:0.5;font-size:0.9rem;margin-top:0.5rem">Configure your episode and hit the button</p>
     </div>
 
-    <!-- PROGRESS -->
     <div class="progress-section" id="progress-section">
       <div style="font-family:'Bebas Neue',cursive;font-size:1.8rem;letter-spacing:3px;margin-bottom:1.5rem;">Forging Your Episode...</div>
       <div class="progress-bar-wrap">
@@ -743,10 +753,7 @@
       </div>
     </div>
 
-    <!-- RESULT -->
-    <div class="result-section" id="result-section">
-      <!-- populated dynamically -->
-    </div>
+    <div class="result-section" id="result-section"></div>
 
   </div>
 </div>
@@ -763,6 +770,21 @@ let selectedScenes = 5;
 let walletAddress = null;
 let currentEpisode = null;
 
+// FIXED: Multiple Gemini models to try in order
+const GEMINI_MODELS = [
+  'gemini-2.0-flash-exp',
+  'gemini-1.5-flash-latest',
+  'gemini-1.5-flash',
+  'gemini-1.5-flash-8b'
+];
+
+// FIXED: Better HuggingFace models that actually work on free tier
+const HF_MODELS = [
+  'stabilityai/stable-diffusion-xl-base-1.0',
+  'runwayml/stable-diffusion-v1-5',
+  'prompthero/openjourney-v4'
+];
+
 const BASE_SEPOLIA = {
   chainId: '0x14a34',
   chainName: 'Base Sepolia',
@@ -772,14 +794,29 @@ const BASE_SEPOLIA = {
 };
 
 // ============================================================
+// DEBUG LOGGING
+// ============================================================
+function debug(msg, type = 'info') {
+  const log = document.getElementById('debug-log');
+  if (!log) return;
+  log.style.display = 'block';
+  const colors = { info: '#00ff88', error: '#ff4d1c', warn: '#ffd700' };
+  const time = new Date().toLocaleTimeString();
+  log.innerHTML += `<div style="color:${colors[type]}">[${time}] ${msg}</div>`;
+  log.scrollTop = log.scrollHeight;
+  console.log(`[${type.toUpperCase()}] ${msg}`);
+}
+
+// ============================================================
 // INIT
 // ============================================================
 window.onload = () => {
   const gk = localStorage.getItem('aniforge_gemini_key');
   const hk = localStorage.getItem('aniforge_hf_key');
-  if (gk) { document.getElementById('gemini-key').value = gk; }
-  if (hk) { document.getElementById('hf-key').value = hk; }
+  if (gk) document.getElementById('gemini-key').value = gk;
+  if (hk) document.getElementById('hf-key').value = hk;
   updateKeyStatus();
+  debug('AniForge initialized');
 };
 
 // ============================================================
@@ -828,6 +865,7 @@ function saveKeys() {
   if (hk) localStorage.setItem('aniforge_hf_key', hk);
   updateKeyStatus();
   showToast('🔑 Keys saved!');
+  debug('Keys saved to localStorage');
 }
 
 function updateKeyStatus() {
@@ -838,7 +876,7 @@ function updateKeyStatus() {
     el.textContent = '✅ Both keys saved';
     el.style.color = '#00ff88';
   } else if (gk) {
-    el.textContent = '⚠️ Gemini key saved. Add HuggingFace.';
+    el.textContent = '⚠️ Gemini saved. Add HuggingFace for images.';
     el.style.color = '#ffd700';
   } else {
     el.textContent = '❌ No keys saved yet';
@@ -847,80 +885,275 @@ function updateKeyStatus() {
 }
 
 // ============================================================
+// TEST GEMINI KEY (NEW!)
+// ============================================================
+async function testGeminiKey() {
+  const key = localStorage.getItem('aniforge_gemini_key') || 
+              document.getElementById('gemini-key').value.trim();
+  
+  if (!key) {
+    showToast('❌ Enter a Gemini key first');
+    return;
+  }
+
+  debug('Testing Gemini API key...', 'info');
+  showToast('🧪 Testing key...', 2000);
+
+  // First, list available models
+  try {
+    const listRes = await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models?key=${key}`
+    );
+    
+    if (!listRes.ok) {
+      const err = await listRes.json();
+      debug(`❌ Invalid API key: ${err.error?.message || listRes.status}`, 'error');
+      showToast('❌ Invalid API key. Get one at aistudio.google.com');
+      return;
+    }
+
+    const listData = await listRes.json();
+    const availableModels = listData.models?.filter(m => 
+      m.supportedGenerationMethods?.includes('generateContent')
+    ).map(m => m.name.replace('models/', ''));
+
+    debug(`✅ Key valid! Found ${availableModels.length} usable models`, 'info');
+    debug(`Available: ${availableModels.slice(0, 5).join(', ')}...`, 'info');
+
+    // Try each model
+    for (const model of GEMINI_MODELS) {
+      if (!availableModels.includes(model)) {
+        debug(`⏭️ ${model} not available`, 'warn');
+        continue;
+      }
+      
+      debug(`🧪 Testing ${model}...`, 'info');
+      
+      try {
+        const testRes = await fetch(
+          `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${key}`,
+          {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              contents: [{ parts: [{ text: 'Say hello' }] }]
+            })
+          }
+        );
+
+        if (testRes.ok) {
+          const data = await testRes.json();
+          const response = data.candidates?.[0]?.content?.parts?.[0]?.text;
+          debug(`✅ ${model} works! Response: "${response?.slice(0, 30)}..."`, 'info');
+          showToast(`✅ Working model: ${model}`);
+          localStorage.setItem('aniforge_working_model', model);
+          return;
+        } else {
+          const err = await testRes.json();
+          debug(`❌ ${model}: ${err.error?.message}`, 'error');
+        }
+      } catch (e) {
+        debug(`❌ ${model}: ${e.message}`, 'error');
+      }
+    }
+
+    showToast('❌ No working models found. Check console.');
+    debug('No working models found', 'error');
+
+  } catch (e) {
+    debug(`❌ Test failed: ${e.message}`, 'error');
+    showToast('❌ Test failed: ' + e.message);
+  }
+}
+
+// ============================================================
 // WALLET
 // ============================================================
 async function connectWallet() {
-  if (!window.ethereum) { showToast('❌ MetaMask not found!'); return; }
+  if (!window.ethereum) { 
+    showToast('❌ MetaMask not found!'); 
+    return; 
+  }
   try {
     const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
     walletAddress = accounts[0];
     try {
-      await window.ethereum.request({ method: 'wallet_switchEthereumChain', params: [{ chainId: BASE_SEPOLIA.chainId }] });
+      await window.ethereum.request({ 
+        method: 'wallet_switchEthereumChain', 
+        params: [{ chainId: BASE_SEPOLIA.chainId }] 
+      });
     } catch (e) {
-      if (e.code === 4902) await window.ethereum.request({ method: 'wallet_addEthereumChain', params: [BASE_SEPOLIA] });
+      if (e.code === 4902) {
+        await window.ethereum.request({ 
+          method: 'wallet_addEthereumChain', 
+          params: [BASE_SEPOLIA] 
+        });
+      }
     }
     const short = walletAddress.slice(0,6) + '...' + walletAddress.slice(-4);
     document.getElementById('wallet-btn').textContent = short;
     showToast('✅ ' + short + ' connected');
-  } catch { showToast('❌ Connection rejected'); }
+    debug(`Wallet connected: ${short}`);
+  } catch (e) { 
+    showToast('❌ Connection rejected');
+    debug(`Wallet error: ${e.message}`, 'error');
+  }
 }
 
 // ============================================================
-// GEMINI STORY WRITER
+// GEMINI STORY WRITER (FIXED WITH FALLBACKS!)
 // ============================================================
 async function callGemini(prompt) {
   const key = localStorage.getItem('aniforge_gemini_key');
   if (!key) throw new Error('No Gemini API key. Add it in the panel.');
 
-  const res = await fetch(`https://generativelanguage.googleapis.com/v1/models/gemini-2.0-flash-exp:generateContent?key=${key}`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      contents: [{ parts: [{ text: prompt }] }],
-      generationConfig: { temperature: 0.9, maxOutputTokens: 2048 }
-    })
-  });
+  // Try the working model first if we found one
+  const workingModel = localStorage.getItem('aniforge_working_model');
+  const modelsToTry = workingModel 
+    ? [workingModel, ...GEMINI_MODELS.filter(m => m !== workingModel)]
+    : GEMINI_MODELS;
 
-  if (!res.ok) {
-    const err = await res.json();
-    throw new Error('Gemini error: ' + (err.error?.message || res.status));
+  let lastError = null;
+
+  for (const model of modelsToTry) {
+    try {
+      debug(`Trying model: ${model}`, 'info');
+      
+      // FIXED: Use /v1beta/ not /v1/
+      const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${key}`;
+      
+      const res = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          contents: [{ parts: [{ text: prompt }] }],
+          generationConfig: { 
+            temperature: 0.9, 
+            maxOutputTokens: 2048 
+          }
+        })
+      });
+
+      if (!res.ok) {
+        const errData = await res.json().catch(() => ({}));
+        const errMsg = errData.error?.message || `HTTP ${res.status}`;
+        debug(`❌ ${model}: ${errMsg}`, 'error');
+        lastError = new Error(errMsg);
+        continue;
+      }
+
+      const data = await res.json();
+      
+      // Check for safety blocks
+      if (data.promptFeedback?.blockReason) {
+        debug(`⚠️ ${model} blocked content: ${data.promptFeedback.blockReason}`, 'warn');
+        lastError = new Error('Content blocked by safety filter');
+        continue;
+      }
+
+      if (!data.candidates?.[0]?.content?.parts?.[0]?.text) {
+        debug(`⚠️ ${model} returned empty response`, 'warn');
+        lastError = new Error('Empty response');
+        continue;
+      }
+
+      const text = data.candidates[0].content.parts[0].text;
+      debug(`✅ ${model} succeeded (${text.length} chars)`, 'info');
+      
+      // Save working model for next time
+      localStorage.setItem('aniforge_working_model', model);
+      
+      return text;
+
+    } catch (e) {
+      debug(`❌ ${model} error: ${e.message}`, 'error');
+      lastError = e;
+      continue;
+    }
   }
 
-  const data = await res.json();
-  return data.candidates[0].content.parts[0].text;
+  throw new Error(
+    `All Gemini models failed. Last error: ${lastError?.message || 'Unknown'}`
+  );
 }
 
 // ============================================================
-// HUGGING FACE IMAGE GEN
+// HUGGING FACE IMAGE GEN (FIXED WITH FALLBACKS!)
 // ============================================================
 async function generateAnimeImage(prompt) {
   const key = localStorage.getItem('aniforge_hf_key');
-  if (!key) return null;
-
-  // Anime style model — free tier
-  const MODEL = 'hakurei/waifu-diffusion';
-  const fullPrompt = `anime style, high quality, ${prompt}, detailed, cinematic lighting`;
-
-  try {
-    const res = await fetch(`https://api-inference.huggingface.co/models/${MODEL}`, {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${key}`,
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({ inputs: fullPrompt, options: { wait_for_model: true } })
-    });
-
-    if (!res.ok) return null;
-    const blob = await res.blob();
-    return URL.createObjectURL(blob);
-  } catch {
+  if (!key) {
+    debug('No HF key - skipping image gen', 'warn');
     return null;
   }
+
+  const fullPrompt = `anime style illustration, ${prompt}, high quality, detailed, vibrant colors, cinematic lighting, masterpiece`;
+  
+  // Try multiple models
+  for (const model of HF_MODELS) {
+    try {
+      debug(`Trying HF model: ${model}`, 'info');
+      
+      const res = await fetch(`https://api-inference.huggingface.co/models/${model}`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${key}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ 
+          inputs: fullPrompt, 
+          parameters: {
+            negative_prompt: 'low quality, blurry, bad anatomy, watermark, text',
+            num_inference_steps: 20,
+            guidance_scale: 7.5
+          },
+          options: { wait_for_model: true } 
+        })
+      });
+
+      if (!res.ok) {
+        const errText = await res.text();
+        debug(`❌ HF ${model}: ${res.status} - ${errText.slice(0, 100)}`, 'error');
+        
+        // If model is loading, wait and retry
+        if (res.status === 503) {
+          debug(`⏳ ${model} is loading, waiting 20s...`, 'warn');
+          await new Promise(r => setTimeout(r, 20000));
+          continue;
+        }
+        continue;
+      }
+
+      // Check if response is actually an image
+      const contentType = res.headers.get('content-type');
+      if (contentType && contentType.includes('application/json')) {
+        const errData = await res.json();
+        debug(`❌ HF returned error: ${errData.error}`, 'error');
+        continue;
+      }
+
+      const blob = await res.blob();
+      
+      if (blob.size < 1000) {
+        debug(`❌ HF returned tiny blob (${blob.size} bytes), likely error`, 'error');
+        continue;
+      }
+
+      debug(`✅ Image generated with ${model} (${blob.size} bytes)`, 'info');
+      return URL.createObjectURL(blob);
+
+    } catch (e) {
+      debug(`❌ HF ${model} error: ${e.message}`, 'error');
+      continue;
+    }
+  }
+
+  debug('All HF models failed', 'error');
+  return null;
 }
 
 // ============================================================
-// MAIN FORGE FUNCTION
+// MAIN FORGE FUNCTION (FIXED!)
 // ============================================================
 async function forgeEpisode() {
   const geminiKey = localStorage.getItem('aniforge_gemini_key');
@@ -932,54 +1165,74 @@ async function forgeEpisode() {
   const concept = document.getElementById('concept').value.trim();
   const forgeBtn = document.getElementById('forge-btn');
   forgeBtn.disabled = true;
+  
+  debug('🚀 Starting episode generation...', 'info');
 
-  // Switch views
   document.getElementById('idle-state').style.display = 'none';
   document.getElementById('result-section').classList.remove('active');
   document.getElementById('progress-section').classList.add('active');
   setProgress(5, null, 1);
 
   try {
-    // ---- STEP 1: Write the full story ----
-    const storyPrompt = `You are an anime screenwriter. Write a complete anime episode in JSON format.
+    const storyPrompt = `You are an anime screenwriter. Write a complete anime episode.
 ${concept ? `Base concept: "${concept}"` : 'Create an original story.'}
 Genre: ${selectedGenre}
 Number of scenes: ${selectedScenes}
 
-Return ONLY valid JSON, no markdown, no extra text. Structure:
+Return ONLY valid JSON (no markdown, no code fences, no extra text). Use this exact structure:
 {
   "title": "Episode Title",
   "synopsis": "2-3 sentence plot summary",
   "genre": "${selectedGenre}",
   "characters": [
-    { "name": "Name", "role": "Hero/Villain/etc", "description": "appearance and personality in 1-2 sentences" }
+    { "name": "Name", "role": "Hero", "description": "brief description" }
   ],
   "scenes": [
     {
       "sceneNumber": 1,
       "title": "Scene Title",
-      "setting": "Where and when this scene takes place",
-      "imagePrompt": "A detailed visual prompt for AI image generation, describing the scene like a painting",
-      "narration": "2-3 sentence narrator description of what happens",
+      "setting": "Where and when",
+      "imagePrompt": "Detailed visual description for AI art",
+      "narration": "2-3 sentence description",
       "dialogue": [
-        { "speaker": "CharacterName", "line": "What they say" }
+        { "speaker": "Name", "line": "What they say" }
       ]
     }
   ]
 }
 
-Make it dramatic, emotional, and distinctly anime in style. Include at least 2 characters.`;
+Make it dramatic and distinctly anime. Include at least 2 characters. Start response with { and end with }.`;
 
+    debug('Calling Gemini for story...', 'info');
     const rawStory = await callGemini(storyPrompt);
     setProgress(35, 1, 2);
 
-    // Parse JSON
+    // FIXED: Better JSON parsing
     let episode;
     try {
-      const jsonMatch = rawStory.match(/\{[\s\S]*\}/);
-      episode = JSON.parse(jsonMatch ? jsonMatch[0] : rawStory);
-    } catch {
-      throw new Error('AI returned invalid format. Try again.');
+      // Remove any markdown code fences
+      let cleaned = rawStory
+        .replace(/```json\s*/gi, '')
+        .replace(/```\s*/g, '')
+        .trim();
+      
+      // Find JSON object
+      const jsonMatch = cleaned.match(/\{[\s\S]*\}/);
+      if (!jsonMatch) {
+        throw new Error('No JSON found in response');
+      }
+      
+      episode = JSON.parse(jsonMatch[0]);
+      debug(`✅ Story parsed: "${episode.title}" with ${episode.scenes?.length} scenes`, 'info');
+    } catch (e) {
+      debug(`❌ JSON parse error: ${e.message}`, 'error');
+      debug(`Raw response preview: ${rawStory.slice(0, 200)}...`, 'warn');
+      throw new Error('AI returned invalid format. Try again or simplify concept.');
+    }
+
+    // Validate structure
+    if (!episode.title || !episode.scenes || !Array.isArray(episode.scenes)) {
+      throw new Error('AI response missing required fields');
     }
 
     episode.id = Date.now().toString();
@@ -996,42 +1249,52 @@ Make it dramatic, emotional, and distinctly anime in style. Include at least 2 c
 
     setProgress(45, 2, 3);
 
-    // ---- STEP 2: Generate images for each scene ----
+    // Show partial result while images generate
+    renderPartialResult(episode);
+
+    // Generate images
     const hfKey = localStorage.getItem('aniforge_hf_key');
     if (hfKey && episode.scenes) {
-      // Show partial UI while generating images
-      renderPartialResult(episode);
-
+      debug(`Generating ${episode.scenes.length} images...`, 'info');
+      
       for (let i = 0; i < episode.scenes.length; i++) {
         const scene = episode.scenes[i];
-        const imgUrl = await generateAnimeImage(scene.imagePrompt || scene.setting);
+        const imgUrl = await generateAnimeImage(scene.imagePrompt || scene.setting || scene.title);
         if (imgUrl) {
           scene.imageUrl = imgUrl;
           updateSceneImage(i, imgUrl);
+        } else {
+          showPlaceholder(i);
         }
         const pct = 45 + ((i + 1) / episode.scenes.length) * 35;
         setProgress(Math.round(pct), null, 3);
       }
+    } else if (!hfKey) {
+      debug('No HF key - showing placeholders for all scenes', 'warn');
+      episode.scenes.forEach((_, i) => showPlaceholder(i));
     }
 
     setProgress(85, 3, 4);
 
-    // ---- STEP 3: Save ----
+    // Save episode
     const episodes = JSON.parse(localStorage.getItem('aniforge_episodes') || '[]');
     episodes.push(episode);
     localStorage.setItem('aniforge_episodes', JSON.stringify(episodes));
     currentEpisode = episode;
+    debug(`💾 Episode saved (total: ${episodes.length})`, 'info');
 
     setProgress(100, 4, null);
 
-    // Transition to result
     setTimeout(() => {
       document.getElementById('progress-section').classList.remove('active');
-      renderFullResult(episode);
       document.getElementById('result-section').classList.add('active');
     }, 600);
 
+    debug('🎉 Episode generation complete!', 'info');
+    showToast('✅ Episode forged successfully!');
+
   } catch (err) {
+    debug(`❌ FATAL: ${err.message}`, 'error');
     showToast('❌ ' + err.message, 6000);
     document.getElementById('progress-section').classList.remove('active');
     document.getElementById('idle-state').style.display = 'flex';
@@ -1040,6 +1303,10 @@ Make it dramatic, emotional, and distinctly anime in style. Include at least 2 c
   }
 }
 
+// ============================================================
+// RENDER FUNCTIONS
+// ============================================================
+function renderPartialRes
 // ============================================================
 // RENDER FUNCTIONS
 // ============================================================
@@ -1052,9 +1319,9 @@ function renderPartialResult(ep) {
 function renderFullResult(ep) {
   const castHtml = (ep.characters || []).map(c => `
     <div class="char-card">
-      <div class="char-avatar">${c.name.charAt(0)}</div>
-      <div class="char-name">${c.name}</div>
-      <div class="char-role">${c.role}</div>
+      <div class="char-avatar">${(c.name || '?').charAt(0)}</div>
+      <div class="char-name">${c.name || 'Unknown'}</div>
+      <div class="char-role">${c.role || ''}</div>
       <div class="char-desc">${c.description || ''}</div>
     </div>
   `).join('');
@@ -1063,7 +1330,7 @@ function renderFullResult(ep) {
     <div class="scene-block" id="scene-block-${i}" style="animation-delay:${i * 0.1}s">
       <div class="scene-header">
         <span class="scene-num">SCENE ${String(s.sceneNumber || i+1).padStart(2,'0')}</span>
-        <span class="scene-title">${s.title || ''}</span>
+        <span class="scene-title">${s.title || 'Untitled'}</span>
       </div>
       <div class="scene-body">
         <div class="scene-img-wrap" id="scene-img-${i}">
@@ -1078,8 +1345,8 @@ function renderFullResult(ep) {
           <div class="scene-dialogue">
             ${(s.dialogue || []).map(d => `
               <div class="dialogue-line">
-                <div class="dialogue-speaker">${d.speaker}</div>
-                <div>"${d.line}"</div>
+                <div class="dialogue-speaker">${d.speaker || 'Narrator'}</div>
+                <div>"${d.line || ''}"</div>
               </div>
             `).join('')}
           </div>
@@ -1092,9 +1359,9 @@ function renderFullResult(ep) {
     <div class="ep-header">
       <div class="ep-badge">AI FORGED EPISODE</div>
       <div class="ep-main-title">${ep.title}</div>
-      <div class="ep-synopsis">${ep.synopsis}</div>
+      <div class="ep-synopsis">${ep.synopsis || ''}</div>
       <div class="ep-meta-row">
-        <div class="ep-meta-item"><strong>Genre</strong>${ep.genre}</div>
+        <div class="ep-meta-item"><strong>Genre</strong>${ep.genre || 'Unknown'}</div>
         <div class="ep-meta-item"><strong>Scenes</strong>${(ep.scenes || []).length}</div>
         <div class="ep-meta-item"><strong>Cast</strong>${(ep.characters || []).length} characters</div>
         <div class="ep-meta-item"><strong>Forged</strong>${new Date(ep.createdAt).toLocaleString()}</div>
@@ -1113,7 +1380,7 @@ function renderFullResult(ep) {
 
     <div class="result-actions">
       <a href="watch.html?id=${ep.id}" class="btn-watch" target="_blank">▶ Watch Episode</a>
-      <button class="btn-save" onclick="showToast('✅ Saved to browser storage!')">💾 Saved</button>
+      <button class="btn-save" onclick="showToast('✅ Already saved to browser storage!')">💾 Saved</button>
       <button class="btn-log" onclick="logOnchain()">⛓️ Log on Base</button>
     </div>
   `;
@@ -1123,6 +1390,21 @@ function updateSceneImage(sceneIndex, imageUrl) {
   const wrap = document.getElementById('scene-img-' + sceneIndex);
   if (!wrap) return;
   wrap.innerHTML = `<img class="scene-img" src="${imageUrl}" alt="Scene ${sceneIndex + 1}">`;
+}
+
+function showPlaceholder(sceneIndex) {
+  const wrap = document.getElementById('scene-img-' + sceneIndex);
+  if (!wrap) return;
+  const emojis = ['🎬', '⚔️', '💫', '🌸', '🔥', '✨', '🎭', '👁️'];
+  const emoji = emojis[sceneIndex % emojis.length];
+  wrap.innerHTML = `
+    <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;width:100%;height:100%;">
+      <div style="font-size:3rem;opacity:0.6;">${emoji}</div>
+      <div style="font-size:0.7rem;opacity:0.4;margin-top:0.5rem;font-family:'Space Mono',monospace;">
+        Scene ${sceneIndex + 1}
+      </div>
+    </div>
+  `;
 }
 
 // ============================================================
@@ -1136,17 +1418,26 @@ async function logOnchain() {
   }
   try {
     showToast('⛓️ Logging episode to Base Sepolia...');
+    debug('Sending onchain transaction...', 'info');
+    
     const provider = new ethers.providers.Web3Provider(window.ethereum);
     const signer = provider.getSigner();
-    const meta = JSON.stringify({ id: currentEpisode.id, title: currentEpisode.title });
+    const meta = JSON.stringify({ 
+      id: currentEpisode.id, 
+      title: currentEpisode.title 
+    });
     const data = ethers.utils.hexlify(ethers.utils.toUtf8Bytes(meta));
+    
     const tx = await signer.sendTransaction({
       to: walletAddress,
       value: ethers.utils.parseEther('0'),
-      data: data.slice(0, 66)
+      data: data.slice(0, 200)
     });
+    
+    debug(`✅ TX sent: ${tx.hash}`, 'info');
     showToast('✅ Onchain! TX: ' + tx.hash.slice(0,16) + '...', 6000);
   } catch (e) {
+    debug(`❌ TX failed: ${e.message}`, 'error');
     showToast('❌ TX failed: ' + e.message);
   }
 }
