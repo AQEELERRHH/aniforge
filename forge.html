@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AniForge — The Forge</title>
+<title>AniForge — The Forge (Groq Edition)</title>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Nunito:wght@400;600;700;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 <style>
   :root {
@@ -15,6 +15,7 @@
     --glow: #00d4ff;
     --gold: #ffd700;
     --green: #00ff88;
+    --groq: #F55036;
   }
 
   * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -46,7 +47,6 @@
     background: linear-gradient(135deg, var(--ember), var(--ember2), var(--gold));
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
-    background-clip: text;
     text-decoration: none;
   }
 
@@ -54,6 +54,15 @@
     -webkit-text-fill-color: rgba(245,240,232,0.4);
     font-size: 0.8rem;
     letter-spacing: 2px;
+  }
+
+  .powered-by {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.65rem;
+    color: var(--groq);
+    letter-spacing: 2px;
+    margin-left: 1rem;
+    opacity: 0.8;
   }
 
   nav .links { display: flex; gap: 1.5rem; align-items: center; }
@@ -135,7 +144,6 @@
     font-family: 'Nunito', sans-serif;
     font-size: 0.95rem;
     outline: none;
-    transition: border-color 0.2s;
     resize: vertical;
   }
 
@@ -157,17 +165,13 @@
     cursor: pointer;
     font-size: 0.78rem;
     text-align: center;
-    transition: all 0.2s;
     font-family: 'Space Mono', monospace;
   }
 
   .genre-btn:hover { border-color: var(--ember); color: var(--ember); }
   .genre-btn.active { background: var(--ember); border-color: var(--ember); color: white; }
 
-  .scene-count-row {
-    display: flex;
-    gap: 0.5rem;
-  }
+  .scene-count-row { display: flex; gap: 0.5rem; }
 
   .scene-btn {
     flex: 1;
@@ -179,7 +183,6 @@
     cursor: pointer;
     font-family: 'Space Mono', monospace;
     font-size: 0.85rem;
-    transition: all 0.2s;
   }
 
   .scene-btn.active { background: var(--ember); border-color: var(--ember); color: white; }
@@ -187,23 +190,36 @@
   .api-section {
     margin-top: 1.5rem;
     padding: 1.2rem;
-    background: rgba(0,212,255,0.05);
-    border: 1px solid rgba(0,212,255,0.15);
+    background: rgba(245,80,54,0.08);
+    border: 1px solid rgba(245,80,54,0.2);
     border-radius: 6px;
   }
 
   .api-section h4 {
     font-family: 'Space Mono', monospace;
     font-size: 0.75rem;
-    color: var(--glow);
+    color: var(--groq);
     letter-spacing: 2px;
+    margin-bottom: 0.5rem;
+  }
+  
+  .api-hint {
+    font-size: 0.68rem;
+    opacity: 0.6;
     margin-bottom: 1rem;
+    font-family: 'Space Mono', monospace;
+    line-height: 1.5;
+  }
+
+  .api-hint a {
+    color: var(--groq);
+    text-decoration: underline;
   }
 
   .api-input {
     width: 100%;
     background: rgba(255,255,255,0.04);
-    border: 1px solid rgba(0,212,255,0.2);
+    border: 1px solid rgba(245,80,54,0.25);
     color: var(--paper);
     padding: 0.65rem 0.9rem;
     border-radius: 5px;
@@ -213,40 +229,31 @@
     margin-bottom: 0.6rem;
   }
 
-  .api-input:focus { border-color: var(--glow); }
+  .api-input:focus { border-color: var(--groq); }
+
+  .api-save-btn, .api-test-btn {
+    width: 100%;
+    padding: 0.5rem;
+    border-radius: 4px;
+    cursor: pointer;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.75rem;
+    letter-spacing: 1px;
+    margin-bottom: 0.5rem;
+    border: 1px solid;
+  }
 
   .api-save-btn {
-    width: 100%;
-    background: rgba(0,212,255,0.1);
-    border: 1px solid rgba(0,212,255,0.3);
-    color: var(--glow);
-    padding: 0.5rem;
-    border-radius: 4px;
-    cursor: pointer;
-    font-family: 'Space Mono', monospace;
-    font-size: 0.75rem;
-    letter-spacing: 1px;
-    transition: background 0.2s;
-    margin-bottom: 0.5rem;
+    background: rgba(245,80,54,0.15);
+    border-color: rgba(245,80,54,0.4);
+    color: var(--groq);
   }
-
-  .api-save-btn:hover { background: rgba(0,212,255,0.2); }
 
   .api-test-btn {
-    width: 100%;
     background: rgba(255,215,0,0.1);
-    border: 1px solid rgba(255,215,0,0.3);
+    border-color: rgba(255,215,0,0.3);
     color: var(--gold);
-    padding: 0.5rem;
-    border-radius: 4px;
-    cursor: pointer;
-    font-family: 'Space Mono', monospace;
-    font-size: 0.75rem;
-    letter-spacing: 1px;
-    transition: background 0.2s;
   }
-
-  .api-test-btn:hover { background: rgba(255,215,0,0.2); }
 
   .api-status {
     font-size: 0.7rem;
@@ -263,10 +270,10 @@
     border-radius: 4px;
     font-family: 'Space Mono', monospace;
     font-size: 0.65rem;
-    max-height: 150px;
+    max-height: 200px;
     overflow-y: auto;
-    color: #00ff88;
     line-height: 1.5;
+    display: none;
   }
 
   .forge-btn {
@@ -281,17 +288,13 @@
     letter-spacing: 4px;
     cursor: pointer;
     margin-top: 1.5rem;
-    transition: transform 0.2s, box-shadow 0.2s, opacity 0.2s;
     box-shadow: 0 4px 20px rgba(255,77,28,0.4);
   }
 
   .forge-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(255,77,28,0.6); }
-  .forge-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+  .forge-btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
-  .forge-output {
-    padding: 2.5rem 3rem;
-    overflow-y: auto;
-  }
+  .forge-output { padding: 2.5rem 3rem; }
 
   .idle-state {
     display: flex;
@@ -335,7 +338,6 @@
   .progress-bar {
     height: 100%;
     background: linear-gradient(90deg, var(--ember), var(--ember2));
-    border-radius: 4px;
     transition: width 0.5s ease;
     width: 0%;
   }
@@ -354,7 +356,6 @@
     font-family: 'Space Mono', monospace;
     font-size: 0.8rem;
     opacity: 0.4;
-    transition: opacity 0.3s;
   }
 
   .step.active { opacity: 1; color: var(--ember2); }
@@ -365,7 +366,6 @@
     height: 8px;
     border-radius: 50%;
     background: currentColor;
-    flex-shrink: 0;
   }
 
   .result-section { display: none; }
@@ -405,11 +405,7 @@
     margin-bottom: 1.5rem;
   }
 
-  .ep-meta-row {
-    display: flex;
-    gap: 1.5rem;
-    flex-wrap: wrap;
-  }
+  .ep-meta-row { display: flex; gap: 1.5rem; flex-wrap: wrap; }
 
   .ep-meta-item {
     font-family: 'Space Mono', monospace;
@@ -423,7 +419,6 @@
     display: block;
     font-size: 0.65rem;
     letter-spacing: 2px;
-    text-transform: uppercase;
     margin-bottom: 0.2rem;
   }
 
@@ -486,8 +481,6 @@
     line-height: 1.4;
   }
 
-  .scenes-section { margin-bottom: 3rem; }
-
   .scene-block {
     background: var(--steel);
     border: 1px solid rgba(255,255,255,0.06);
@@ -525,10 +518,7 @@
     letter-spacing: 1px;
   }
 
-  .scene-body {
-    display: grid;
-    grid-template-columns: 300px 1fr;
-  }
+  .scene-body { display: grid; grid-template-columns: 300px 1fr; }
 
   .scene-img-wrap {
     background: linear-gradient(135deg, #1a0a2e, #0a1040);
@@ -606,49 +596,34 @@
     flex-wrap: wrap;
   }
 
-  .btn-watch {
-    background: linear-gradient(135deg, var(--ember), var(--ember2));
-    color: white;
-    padding: 0.9rem 2.5rem;
-    border: none;
+  .btn-watch, .btn-save, .btn-log {
+    padding: 0.9rem 2rem;
     border-radius: 4px;
     font-family: 'Bebas Neue', cursive;
     font-size: 1.1rem;
     letter-spacing: 3px;
     cursor: pointer;
     text-decoration: none;
-    transition: transform 0.2s;
     display: inline-block;
+    border: 1px solid transparent;
   }
-  .btn-watch:hover { transform: translateY(-2px); }
+
+  .btn-watch {
+    background: linear-gradient(135deg, var(--ember), var(--ember2));
+    color: white;
+  }
 
   .btn-save {
     background: transparent;
     color: var(--glow);
-    border: 1px solid var(--glow);
-    padding: 0.9rem 2rem;
-    border-radius: 4px;
-    font-family: 'Bebas Neue', cursive;
-    font-size: 1.1rem;
-    letter-spacing: 3px;
-    cursor: pointer;
-    transition: background 0.2s;
+    border-color: var(--glow);
   }
-  .btn-save:hover { background: rgba(0,212,255,0.1); }
 
   .btn-log {
     background: transparent;
     color: var(--gold);
-    border: 1px solid var(--gold);
-    padding: 0.9rem 2rem;
-    border-radius: 4px;
-    font-family: 'Bebas Neue', cursive;
-    font-size: 1.1rem;
-    letter-spacing: 3px;
-    cursor: pointer;
-    transition: background 0.2s;
+    border-color: var(--gold);
   }
-  .btn-log:hover { background: rgba(255,215,0,0.1); }
 
   .toast {
     position: fixed;
@@ -664,7 +639,7 @@
     z-index: 999;
     transform: translateY(100px);
     opacity: 0;
-    transition: transform 0.3s, opacity 0.3s;
+    transition: all 0.3s;
     max-width: 400px;
   }
   .toast.show { transform: translateY(0); opacity: 1; }
@@ -674,7 +649,6 @@
     .forge-panel { position: relative; top: 0; max-height: none; }
     .forge-output { padding: 1.5rem; }
     .scene-body { grid-template-columns: 1fr; }
-    nav { padding: 1rem 1.5rem; }
   }
 </style>
 </head>
@@ -682,6 +656,7 @@
 
 <nav>
   <a href="index.html" class="logo">Ani<span>FORGE</span></a>
+  <span class="powered-by">POWERED BY GROQ ⚡</span>
   <div class="links">
     <a href="index.html">← Browse</a>
     <button id="wallet-btn" onclick="connectWallet()">Connect Wallet</button>
@@ -692,7 +667,7 @@
 
   <div class="forge-panel">
     <div class="forge-title">⚡ The Forge</div>
-    <div class="forge-sub">AI EPISODE GENERATOR</div>
+    <div class="forge-sub">GROQ-POWERED STORY ENGINE</div>
 
     <div class="field-label">Story Concept (optional)</div>
     <textarea class="forge-input" id="concept" rows="3" placeholder="e.g. A girl discovers her dead father was a legendary demon hunter..."></textarea>
@@ -715,18 +690,25 @@
     </div>
 
     <div class="api-section">
-      <h4>🔑 API KEYS (saved locally)</h4>
+      <h4>🚀 GROQ API KEY (REQUIRED)</h4>
+      <div class="api-hint">
+        Get FREE key at:<br>
+        <a href="https://console.groq.com/keys" target="_blank">console.groq.com/keys</a>
+      </div>
+      <input class="api-input" id="groq-key" type="password" placeholder="gsk_...">
 
-      <div class="field-label" style="color: var(--glow); margin-top:0">Gemini API Key</div>
-      <input class="api-input" id="gemini-key" type="password" placeholder="AIza...">
-
-      <div class="field-label" style="color: var(--glow)">HuggingFace API Key</div>
+      <h4 style="margin-top:1rem;">🎨 HUGGINGFACE KEY (OPTIONAL - FOR IMAGES)</h4>
+      <div class="api-hint">
+        Get at: <a href="https://huggingface.co/settings/tokens" target="_blank"> 
+          <div class="api-hint">
+        Get at: <a href="https://huggingface.co/settings/tokens" target="_blank">huggingface.co/settings/tokens</a>
+      </div>
       <input class="api-input" id="hf-key" type="password" placeholder="hf_...">
 
       <button class="api-save-btn" onclick="saveKeys()">💾 Save Keys</button>
-      <button class="api-test-btn" onclick="testGeminiKey()">🧪 Test Gemini Key</button>
+      <button class="api-test-btn" onclick="testGroqKey()">🧪 Test Groq Key</button>
       <div class="api-status" id="key-status"></div>
-      <div class="debug-log" id="debug-log" style="display:none;"></div>
+      <div class="debug-log" id="debug-log"></div>
     </div>
 
     <button class="forge-btn" id="forge-btn" onclick="forgeEpisode()">⚡ FORGE EPISODE</button>
@@ -738,6 +720,7 @@
       <div class="idle-icon">⚡</div>
       <h2>Ready to Forge</h2>
       <p style="opacity:0.5;font-size:0.9rem;margin-top:0.5rem">Configure your episode and hit the button</p>
+      <p style="opacity:0.4;font-size:0.8rem;margin-top:1rem;font-family:'Space Mono',monospace;">Powered by Llama 3.3 70B via Groq</p>
     </div>
 
     <div class="progress-section" id="progress-section">
@@ -746,10 +729,10 @@
         <div class="progress-bar" id="progress-bar"></div>
       </div>
       <div class="progress-steps">
-        <div class="step" id="step-1"><div class="step-dot"></div> Writing story & characters with Gemini AI</div>
-        <div class="step" id="step-2"><div class="step-dot"></div> Breaking story into scenes</div>
-        <div class="step" id="step-3"><div class="step-dot"></div> Generating anime images for each scene</div>
-        <div class="step" id="step-4"><div class="step-dot"></div> Saving episode to storage</div>
+        <div class="step" id="step-1"><div class="step-dot"></div> Writing story with Groq (Llama 3.3 70B)</div>
+        <div class="step" id="step-2"><div class="step-dot"></div> Breaking into scenes & characters</div>
+        <div class="step" id="step-3"><div class="step-dot"></div> Generating anime images</div>
+        <div class="step" id="step-4"><div class="step-dot"></div> Saving episode</div>
       </div>
     </div>
 
@@ -770,19 +753,20 @@ let selectedScenes = 5;
 let walletAddress = null;
 let currentEpisode = null;
 
-// FIXED: Multiple Gemini models to try in order
-const GEMINI_MODELS = [
-  'gemini-2.0-flash-exp',
-  'gemini-1.5-flash-latest',
-  'gemini-1.5-flash',
-  'gemini-1.5-flash-8b'
+// ═══════════ GROQ MODELS ═══════════
+// Try these in order. All are FREE.
+const GROQ_MODELS = [
+  'llama-3.3-70b-versatile',      // Best for stories
+  'llama-3.1-70b-versatile',      // Fallback
+  'llama-3.1-8b-instant',         // Fast backup
+  'mixtral-8x7b-32768',           // Alternative
+  'gemma2-9b-it'                  // Last resort
 ];
 
-// FIXED: Better HuggingFace models that actually work on free tier
+// HuggingFace models (ordered by reliability)
 const HF_MODELS = [
   'stabilityai/stable-diffusion-xl-base-1.0',
-  'runwayml/stable-diffusion-v1-5',
-  'prompthero/openjourney-v4'
+  'runwayml/stable-diffusion-v1-5'
 ];
 
 const BASE_SEPOLIA = {
@@ -811,12 +795,12 @@ function debug(msg, type = 'info') {
 // INIT
 // ============================================================
 window.onload = () => {
-  const gk = localStorage.getItem('aniforge_gemini_key');
+  const gk = localStorage.getItem('aniforge_groq_key');
   const hk = localStorage.getItem('aniforge_hf_key');
-  if (gk) document.getElementById('gemini-key').value = gk;
+  if (gk) document.getElementById('groq-key').value = gk;
   if (hk) document.getElementById('hf-key').value = hk;
   updateKeyStatus();
-  debug('AniForge initialized');
+  debug('AniForge (Groq Edition) initialized ⚡');
 };
 
 // ============================================================
@@ -856,113 +840,113 @@ function setProgress(pct, stepDone, stepActive) {
 }
 
 // ============================================================
-// KEYS
+// KEY MANAGEMENT
 // ============================================================
 function saveKeys() {
-  const gk = document.getElementById('gemini-key').value.trim();
+  const gk = document.getElementById('groq-key').value.trim();
   const hk = document.getElementById('hf-key').value.trim();
-  if (gk) localStorage.setItem('aniforge_gemini_key', gk);
+  
+  if (gk && !gk.startsWith('gsk_')) {
+    showToast('⚠️ Groq keys start with "gsk_"');
+    return;
+  }
+  
+  if (gk) localStorage.setItem('aniforge_groq_key', gk);
   if (hk) localStorage.setItem('aniforge_hf_key', hk);
+  
   updateKeyStatus();
   showToast('🔑 Keys saved!');
   debug('Keys saved to localStorage');
 }
 
 function updateKeyStatus() {
-  const gk = localStorage.getItem('aniforge_gemini_key');
+  const gk = localStorage.getItem('aniforge_groq_key');
   const hk = localStorage.getItem('aniforge_hf_key');
   const el = document.getElementById('key-status');
+  
   if (gk && hk) {
-    el.textContent = '✅ Both keys saved';
+    el.textContent = '✅ Groq + HuggingFace ready';
     el.style.color = '#00ff88';
   } else if (gk) {
-    el.textContent = '⚠️ Gemini saved. Add HuggingFace for images.';
+    el.textContent = '✅ Groq ready (images disabled)';
     el.style.color = '#ffd700';
   } else {
-    el.textContent = '❌ No keys saved yet';
+    el.textContent = '❌ No Groq key yet';
     el.style.color = '#ff4d1c';
   }
 }
 
 // ============================================================
-// TEST GEMINI KEY (NEW!)
+// TEST GROQ KEY
 // ============================================================
-async function testGeminiKey() {
-  const key = localStorage.getItem('aniforge_gemini_key') || 
-              document.getElementById('gemini-key').value.trim();
+async function testGroqKey() {
+  const key = localStorage.getItem('aniforge_groq_key') || 
+              document.getElementById('groq-key').value.trim();
   
   if (!key) {
-    showToast('❌ Enter a Gemini key first');
+    showToast('❌ Enter a Groq key first');
     return;
   }
 
-  debug('Testing Gemini API key...', 'info');
+  if (!key.startsWith('gsk_')) {
+    debug('❌ Invalid key format. Groq keys start with "gsk_"', 'error');
+    showToast('❌ Invalid key format');
+    return;
+  }
+
+  debug('🧪 Testing Groq API key...', 'info');
   showToast('🧪 Testing key...', 2000);
 
-  // First, list available models
-  try {
-    const listRes = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models?key=${key}`
-    );
-    
-    if (!listRes.ok) {
-      const err = await listRes.json();
-      debug(`❌ Invalid API key: ${err.error?.message || listRes.status}`, 'error');
-      showToast('❌ Invalid API key. Get one at aistudio.google.com');
-      return;
-    }
+  let workingModel = null;
 
-    const listData = await listRes.json();
-    const availableModels = listData.models?.filter(m => 
-      m.supportedGenerationMethods?.includes('generateContent')
-    ).map(m => m.name.replace('models/', ''));
-
-    debug(`✅ Key valid! Found ${availableModels.length} usable models`, 'info');
-    debug(`Available: ${availableModels.slice(0, 5).join(', ')}...`, 'info');
-
-    // Try each model
-    for (const model of GEMINI_MODELS) {
-      if (!availableModels.includes(model)) {
-        debug(`⏭️ ${model} not available`, 'warn');
-        continue;
-      }
+  for (const model of GROQ_MODELS) {
+    try {
+      debug(`Testing model: ${model}`, 'info');
       
-      debug(`🧪 Testing ${model}...`, 'info');
-      
-      try {
-        const testRes = await fetch(
-          `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${key}`,
-          {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              contents: [{ parts: [{ text: 'Say hello' }] }]
-            })
-          }
-        );
+      const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${key}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          model: model,
+          messages: [
+            { role: 'user', content: 'Say "hello" in one word.' }
+          ],
+          max_tokens: 10
+        })
+      });
 
-        if (testRes.ok) {
-          const data = await testRes.json();
-          const response = data.candidates?.[0]?.content?.parts?.[0]?.text;
-          debug(`✅ ${model} works! Response: "${response?.slice(0, 30)}..."`, 'info');
-          showToast(`✅ Working model: ${model}`);
-          localStorage.setItem('aniforge_working_model', model);
+      if (res.ok) {
+        const data = await res.json();
+        const reply = data.choices?.[0]?.message?.content || '';
+        debug(`✅ ${model} works! Response: "${reply.trim()}"`, 'info');
+        workingModel = model;
+        break;
+      } else {
+        const err = await res.json().catch(() => ({}));
+        const errMsg = err.error?.message || `HTTP ${res.status}`;
+        debug(`❌ ${model}: ${errMsg}`, 'error');
+        
+        // If auth error, stop trying
+        if (res.status === 401) {
+          showToast('❌ Invalid API key');
           return;
-        } else {
-          const err = await testRes.json();
-          debug(`❌ ${model}: ${err.error?.message}`, 'error');
         }
-      } catch (e) {
-        debug(`❌ ${model}: ${e.message}`, 'error');
       }
+    } catch (e) {
+      debug(`❌ ${model} network error: ${e.message}`, 'error');
     }
+  }
 
-    showToast('❌ No working models found. Check console.');
-    debug('No working models found', 'error');
-
-  } catch (e) {
-    debug(`❌ Test failed: ${e.message}`, 'error');
-    showToast('❌ Test failed: ' + e.message);
+  if (workingModel) {
+    localStorage.setItem('aniforge_working_model', workingModel);
+    showToast(`✅ Working! Using: ${workingModel}`);
+    debug(`🎉 Ready to forge with ${workingModel}`, 'info');
+  } else {
+    showToast('❌ No working models found');
+    debug('All models failed - check your key or try again later', 'error');
   }
 }
 
@@ -1001,37 +985,56 @@ async function connectWallet() {
 }
 
 // ============================================================
-// GEMINI STORY WRITER (FIXED WITH FALLBACKS!)
+// GROQ API CALL (MAIN AI FUNCTION)
 // ============================================================
-async function callGemini(prompt) {
-  const key = localStorage.getItem('aniforge_gemini_key');
-  if (!key) throw new Error('No Gemini API key. Add it in the panel.');
+async function callGroq(prompt, jsonMode = true) {
+  const key = localStorage.getItem('aniforge_groq_key');
+  if (!key) throw new Error('No Groq API key. Add it in the panel.');
 
-  // Try the working model first if we found one
-  const workingModel = localStorage.getItem('aniforge_working_model');
-  const modelsToTry = workingModel 
-    ? [workingModel, ...GEMINI_MODELS.filter(m => m !== workingModel)]
-    : GEMINI_MODELS;
+  // Use saved working model if available
+  const savedModel = localStorage.getItem('aniforge_working_model');
+  const modelsToTry = savedModel 
+    ? [savedModel, ...GROQ_MODELS.filter(m => m !== savedModel)]
+    : GROQ_MODELS;
 
   let lastError = null;
 
   for (const model of modelsToTry) {
     try {
-      debug(`Trying model: ${model}`, 'info');
+      debug(`🚀 Calling Groq with ${model}`, 'info');
       
-      // FIXED: Use /v1beta/ not /v1/
-      const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${key}`;
-      
-      const res = await fetch(url, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          contents: [{ parts: [{ text: prompt }] }],
-          generationConfig: { 
-            temperature: 0.9, 
-            maxOutputTokens: 2048 
+      const body = {
+        model: model,
+        messages: [
+          {
+            role: 'system',
+            content: jsonMode 
+              ? 'You are an expert anime screenwriter. Always respond with valid JSON only. No markdown, no explanations, just pure JSON.'
+              : 'You are an expert anime screenwriter.'
+          },
+          {
+            role: 'user',
+            content: prompt
           }
-        })
+        ],
+        temperature: 0.9,
+        max_tokens: 4000
+      };
+
+      // Add JSON mode for supported models
+      if (jsonMode && !model.includes('gemma') && !model.includes('mixtral')) {
+        body.response_format = { type: 'json_object' };
+      }
+
+      const startTime = Date.now();
+      
+      const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${key}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(body)
       });
 
       if (!res.ok) {
@@ -1039,28 +1042,29 @@ async function callGemini(prompt) {
         const errMsg = errData.error?.message || `HTTP ${res.status}`;
         debug(`❌ ${model}: ${errMsg}`, 'error');
         lastError = new Error(errMsg);
+        
+        // Auth errors - stop trying
+        if (res.status === 401) {
+          throw new Error('Invalid Groq API key. Get a new one at console.groq.com/keys');
+        }
+        
         continue;
       }
 
       const data = await res.json();
+      const elapsed = ((Date.now() - startTime) / 1000).toFixed(1);
       
-      // Check for safety blocks
-      if (data.promptFeedback?.blockReason) {
-        debug(`⚠️ ${model} blocked content: ${data.promptFeedback.blockReason}`, 'warn');
-        lastError = new Error('Content blocked by safety filter');
+      if (!data.choices?.[0]?.message?.content) {
+        debug(`⚠️ ${model} returned empty`, 'warn');
         continue;
       }
 
-      if (!data.candidates?.[0]?.content?.parts?.[0]?.text) {
-        debug(`⚠️ ${model} returned empty response`, 'warn');
-        lastError = new Error('Empty response');
-        continue;
-      }
-
-      const text = data.candidates[0].content.parts[0].text;
-      debug(`✅ ${model} succeeded (${text.length} chars)`, 'info');
+      const text = data.choices[0].message.content;
+      const tokensUsed = data.usage?.total_tokens || 0;
       
-      // Save working model for next time
+      debug(`✅ ${model} responded in ${elapsed}s (${tokensUsed} tokens)`, 'info');
+      
+      // Save working model
       localStorage.setItem('aniforge_working_model', model);
       
       return text;
@@ -1068,31 +1072,34 @@ async function callGemini(prompt) {
     } catch (e) {
       debug(`❌ ${model} error: ${e.message}`, 'error');
       lastError = e;
+      
+      if (e.message.includes('Invalid Groq API key')) {
+        throw e;
+      }
       continue;
     }
   }
 
   throw new Error(
-    `All Gemini models failed. Last error: ${lastError?.message || 'Unknown'}`
+    `All Groq models failed. Last error: ${lastError?.message || 'Unknown'}`
   );
 }
 
 // ============================================================
-// HUGGING FACE IMAGE GEN (FIXED WITH FALLBACKS!)
+// HUGGINGFACE IMAGE GENERATION
 // ============================================================
 async function generateAnimeImage(prompt) {
   const key = localStorage.getItem('aniforge_hf_key');
   if (!key) {
-    debug('No HF key - skipping image gen', 'warn');
+    debug('No HF key - skipping image', 'warn');
     return null;
   }
 
-  const fullPrompt = `anime style illustration, ${prompt}, high quality, detailed, vibrant colors, cinematic lighting, masterpiece`;
+  const fullPrompt = `anime style illustration, ${prompt}, high quality, detailed, vibrant colors, cinematic lighting, masterpiece, beautiful anime art`;
   
-  // Try multiple models
   for (const model of HF_MODELS) {
     try {
-      debug(`Trying HF model: ${model}`, 'info');
+      debug(`🎨 Trying ${model}`, 'info');
       
       const res = await fetch(`https://api-inference.huggingface.co/models/${model}`, {
         method: 'POST',
@@ -1103,7 +1110,7 @@ async function generateAnimeImage(prompt) {
         body: JSON.stringify({ 
           inputs: fullPrompt, 
           parameters: {
-            negative_prompt: 'low quality, blurry, bad anatomy, watermark, text',
+            negative_prompt: 'low quality, blurry, bad anatomy, watermark, text, ugly',
             num_inference_steps: 20,
             guidance_scale: 7.5
           },
@@ -1113,33 +1120,31 @@ async function generateAnimeImage(prompt) {
 
       if (!res.ok) {
         const errText = await res.text();
-        debug(`❌ HF ${model}: ${res.status} - ${errText.slice(0, 100)}`, 'error');
+        debug(`❌ HF ${model}: ${res.status}`, 'error');
         
-        // If model is loading, wait and retry
         if (res.status === 503) {
-          debug(`⏳ ${model} is loading, waiting 20s...`, 'warn');
+          debug(`⏳ ${model} loading, waiting 20s...`, 'warn');
           await new Promise(r => setTimeout(r, 20000));
           continue;
         }
         continue;
       }
 
-      // Check if response is actually an image
       const contentType = res.headers.get('content-type');
       if (contentType && contentType.includes('application/json')) {
         const errData = await res.json();
-        debug(`❌ HF returned error: ${errData.error}`, 'error');
+        debug(`❌ HF error: ${errData.error}`, 'error');
         continue;
       }
 
       const blob = await res.blob();
       
       if (blob.size < 1000) {
-        debug(`❌ HF returned tiny blob (${blob.size} bytes), likely error`, 'error');
+        debug(`❌ Tiny blob (${blob.size}b), skipping`, 'error');
         continue;
       }
 
-      debug(`✅ Image generated with ${model} (${blob.size} bytes)`, 'info');
+      debug(`✅ Image generated (${(blob.size/1024).toFixed(1)}KB)`, 'info');
       return URL.createObjectURL(blob);
 
     } catch (e) {
@@ -1148,17 +1153,16 @@ async function generateAnimeImage(prompt) {
     }
   }
 
-  debug('All HF models failed', 'error');
   return null;
 }
 
 // ============================================================
-// MAIN FORGE FUNCTION (FIXED!)
+// MAIN FORGE FUNCTION
 // ============================================================
 async function forgeEpisode() {
-  const geminiKey = localStorage.getItem('aniforge_gemini_key');
-  if (!geminiKey) {
-    showToast('❌ Add your Gemini API key first!');
+  const groqKey = localStorage.getItem('aniforge_groq_key');
+  if (!groqKey) {
+    showToast('❌ Add your Groq API key first!');
     return;
   }
 
@@ -1166,7 +1170,7 @@ async function forgeEpisode() {
   const forgeBtn = document.getElementById('forge-btn');
   forgeBtn.disabled = true;
   
-  debug('🚀 Starting episode generation...', 'info');
+  debug('🚀 Starting episode generation with Groq...', 'info');
 
   document.getElementById('idle-state').style.display = 'none';
   document.getElementById('result-section').classList.remove('active');
@@ -1174,114 +1178,126 @@ async function forgeEpisode() {
   setProgress(5, null, 1);
 
   try {
-    const storyPrompt = `You are an anime screenwriter. Write a complete anime episode.
-${concept ? `Base concept: "${concept}"` : 'Create an original story.'}
+    // ═══ STEP 1: Generate Story with Groq ═══
+    const storyPrompt = `Create a complete anime episode as JSON.
+    
+${concept ? `Base concept: "${concept}"` : 'Create an original anime story.'}
 Genre: ${selectedGenre}
 Number of scenes: ${selectedScenes}
 
-Return ONLY valid JSON (no markdown, no code fences, no extra text). Use this exact structure:
+Return this exact JSON structure:
 {
-  "title": "Episode Title",
-  "synopsis": "2-3 sentence plot summary",
+  "title": "Compelling episode title",
+  "synopsis": "2-3 sentence dramatic plot summary",
   "genre": "${selectedGenre}",
   "characters": [
-    { "name": "Name", "role": "Hero", "description": "brief description" }
+    {
+      "name": "Character Name",
+      "role": "Hero/Villain/Mentor/etc",
+      "description": "1-2 sentences about appearance and personality"
+    }
   ],
   "scenes": [
     {
       "sceneNumber": 1,
       "title": "Scene Title",
-      "setting": "Where and when",
-      "imagePrompt": "Detailed visual description for AI art",
-      "narration": "2-3 sentence description",
+      "setting": "Where and when this scene takes place",
+      "imagePrompt": "Detailed visual description for AI image generation (characters, setting, mood, colors)",
+      "narration": "2-3 sentences describing what happens in the scene, written in anime narrator style",
       "dialogue": [
-        { "speaker": "Name", "line": "What they say" }
+        {"speaker": "Character Name", "line": "What they say (keep it dramatic and anime-like)"}
       ]
     }
   ]
 }
 
-Make it dramatic and distinctly anime. Include at least 2 characters. Start response with { and end with }.`;
+Requirements:
+- Include at least 2-3 characters
+- Each scene should have 2-4 dialogue lines
+- Make it dramatic and emotionally charged (anime style)
+- End with a cliffhanger or emotional beat
+- imagePrompt should be detailed enough for Stable Diffusion
 
-    debug('Calling Gemini for story...', 'info');
-    const rawStory = await callGemini(storyPrompt);
-    setProgress(35, 1, 2);
+Output ONLY the JSON. No markdown, no explanation.`;
 
-    // FIXED: Better JSON parsing
+    debug('📝 Requesting story from Groq...', 'info');
+    const rawStory = await callGroq(storyPrompt, true);
+    setProgress(40, 1, 2);
+
+    // ═══ PARSE JSON ═══
     let episode;
     try {
-      // Remove any markdown code fences
+      // Clean up response
       let cleaned = rawStory
         .replace(/```json\s*/gi, '')
         .replace(/```\s*/g, '')
         .trim();
       
-      // Find JSON object
+      // Extract JSON
       const jsonMatch = cleaned.match(/\{[\s\S]*\}/);
       if (!jsonMatch) {
         throw new Error('No JSON found in response');
       }
       
       episode = JSON.parse(jsonMatch[0]);
-      debug(`✅ Story parsed: "${episode.title}" with ${episode.scenes?.length} scenes`, 'info');
+      debug(`✅ Parsed: "${episode.title}" with ${episode.scenes?.length} scenes`, 'info');
     } catch (e) {
-      debug(`❌ JSON parse error: ${e.message}`, 'error');
-      debug(`Raw response preview: ${rawStory.slice(0, 200)}...`, 'warn');
-      throw new Error('AI returned invalid format. Try again or simplify concept.');
+      debug(`❌ Parse error: ${e.message}`, 'error');
+      debug(`Raw: ${rawStory.slice(0, 300)}...`, 'warn');
+      throw new Error('Story format was invalid. Try again or simplify concept.');
     }
 
-    // Validate structure
-    if (!episode.title || !episode.scenes || !Array.isArray(episode.scenes)) {
-      throw new Error('AI response missing required fields');
+    // Validate
+    if (!episode.title || !episode.scenes?.length) {
+      throw new Error('Story missing required fields');
     }
 
+    // Add metadata
     episode.id = Date.now().toString();
     episode.createdAt = new Date().toISOString();
     episode.votes = 0;
     episode.views = 0;
-    episode.thumbColors = [
-      'linear-gradient(135deg, #1a0a2e, #0d1a3a)',
-      'linear-gradient(135deg, #1a0a0a, #2a1010)',
-      'linear-gradient(135deg, #0a1a0a, #0d2a1a)',
-      'linear-gradient(135deg, #1a1a0a, #2a2a10)',
-    ];
-    episode.thumbColor = episode.thumbColors[Math.floor(Math.random() * episode.thumbColors.length)];
+    episode.aiModel = localStorage.getItem('aniforge_working_model') || 'groq';
 
-    setProgress(45, 2, 3);
+    setProgress(50, 2, 3);
 
-    // Show partial result while images generate
+    // Show partial result
     renderPartialResult(episode);
 
-    // Generate images
+    // ═══ STEP 2: Generate Images ═══
     const hfKey = localStorage.getItem('aniforge_hf_key');
     if (hfKey && episode.scenes) {
-      debug(`Generating ${episode.scenes.length} images...`, 'info');
+      debug(`🎨 Generating ${episode.scenes.length} images...`, 'info');
       
       for (let i = 0; i < episode.scenes.length; i++) {
         const scene = episode.scenes[i];
-        const imgUrl = await generateAnimeImage(scene.imagePrompt || scene.setting || scene.title);
+        const imgUrl = await generateAnimeImage(
+          scene.imagePrompt || scene.setting || scene.title
+        );
+        
         if (imgUrl) {
           scene.imageUrl = imgUrl;
           updateSceneImage(i, imgUrl);
         } else {
           showPlaceholder(i);
         }
-        const pct = 45 + ((i + 1) / episode.scenes.length) * 35;
+        
+        const pct = 50 + ((i + 1) / episode.scenes.length) * 35;
         setProgress(Math.round(pct), null, 3);
       }
-    } else if (!hfKey) {
-      debug('No HF key - showing placeholders for all scenes', 'warn');
+    } else {
+      debug('⚠️ No HF key - showing placeholders', 'warn');
       episode.scenes.forEach((_, i) => showPlaceholder(i));
     }
 
-    setProgress(85, 3, 4);
+    setProgress(90, 3, 4);
 
-    // Save episode
+    // ═══ STEP 3: Save ═══
     const episodes = JSON.parse(localStorage.getItem('aniforge_episodes') || '[]');
     episodes.push(episode);
     localStorage.setItem('aniforge_episodes', JSON.stringify(episodes));
     currentEpisode = episode;
-    debug(`💾 Episode saved (total: ${episodes.length})`, 'info');
+    debug(`💾 Saved! Total: ${episodes.length}`, 'info');
 
     setProgress(100, 4, null);
 
@@ -1290,8 +1306,8 @@ Make it dramatic and distinctly anime. Include at least 2 characters. Start resp
       document.getElementById('result-section').classList.add('active');
     }, 600);
 
-    debug('🎉 Episode generation complete!', 'info');
-    showToast('✅ Episode forged successfully!');
+    debug('🎉 Episode forged successfully!', 'info');
+    showToast('✅ Episode created!');
 
   } catch (err) {
     debug(`❌ FATAL: ${err.message}`, 'error');
@@ -1304,11 +1320,7 @@ Make it dramatic and distinctly anime. Include at least 2 characters. Start resp
 }
 
 // ============================================================
-// RENDER FUNCTIONS
-// ============================================================
-function renderPartialRes
-// ============================================================
-// RENDER FUNCTIONS
+// RENDER
 // ============================================================
 function renderPartialResult(ep) {
   document.getElementById('progress-section').classList.remove('active');
@@ -1357,13 +1369,14 @@ function renderFullResult(ep) {
 
   document.getElementById('result-section').innerHTML = `
     <div class="ep-header">
-      <div class="ep-badge">AI FORGED EPISODE</div>
+      <div class="ep-badge">⚡ FORGED WITH GROQ</div>
       <div class="ep-main-title">${ep.title}</div>
       <div class="ep-synopsis">${ep.synopsis || ''}</div>
       <div class="ep-meta-row">
         <div class="ep-meta-item"><strong>Genre</strong>${ep.genre || 'Unknown'}</div>
         <div class="ep-meta-item"><strong>Scenes</strong>${(ep.scenes || []).length}</div>
         <div class="ep-meta-item"><strong>Cast</strong>${(ep.characters || []).length} characters</div>
+        <div class="ep-meta-item"><strong>AI Model</strong>${(ep.aiModel || 'groq').split('-').slice(0,2).join('-')}</div>
         <div class="ep-meta-item"><strong>Forged</strong>${new Date(ep.createdAt).toLocaleString()}</div>
       </div>
     </div>
@@ -1380,7 +1393,7 @@ function renderFullResult(ep) {
 
     <div class="result-actions">
       <a href="watch.html?id=${ep.id}" class="btn-watch" target="_blank">▶ Watch Episode</a>
-      <button class="btn-save" onclick="showToast('✅ Already saved to browser storage!')">💾 Saved</button>
+      <button class="btn-save" onclick="showToast('✅ Already saved to browser!')">💾 Saved</button>
       <button class="btn-log" onclick="logOnchain()">⛓️ Log on Base</button>
     </div>
   `;
@@ -1403,6 +1416,9 @@ function showPlaceholder(sceneIndex) {
       <div style="font-size:0.7rem;opacity:0.4;margin-top:0.5rem;font-family:'Space Mono',monospace;">
         Scene ${sceneIndex + 1}
       </div>
+      <div style="font-size:0.6rem;opacity:0.3;margin-top:0.3rem;font-family:'Space Mono',monospace;">
+        Add HF key for images
+      </div>
     </div>
   `;
 }
@@ -1413,18 +1429,19 @@ function showPlaceholder(sceneIndex) {
 async function logOnchain() {
   if (!currentEpisode) return;
   if (!walletAddress) {
-    showToast('⚠️ Connect wallet first to log onchain!');
+    showToast('⚠️ Connect wallet first!');
     return;
   }
   try {
-    showToast('⛓️ Logging episode to Base Sepolia...');
+    showToast('⛓️ Logging to Base Sepolia...');
     debug('Sending onchain transaction...', 'info');
     
     const provider = new ethers.providers.Web3Provider(window.ethereum);
     const signer = provider.getSigner();
     const meta = JSON.stringify({ 
       id: currentEpisode.id, 
-      title: currentEpisode.title 
+      title: currentEpisode.title,
+      genre: currentEpisode.genre
     });
     const data = ethers.utils.hexlify(ethers.utils.toUtf8Bytes(meta));
     
@@ -1434,8 +1451,8 @@ async function logOnchain() {
       data: data.slice(0, 200)
     });
     
-    debug(`✅ TX sent: ${tx.hash}`, 'info');
-    showToast('✅ Onchain! TX: ' + tx.hash.slice(0,16) + '...', 6000);
+    debug(`✅ TX: ${tx.hash}`, 'info');
+    showToast('✅ Logged! TX: ' + tx.hash.slice(0,16) + '...', 6000);
   } catch (e) {
     debug(`❌ TX failed: ${e.message}`, 'error');
     showToast('❌ TX failed: ' + e.message);
@@ -1444,3 +1461,4 @@ async function logOnchain() {
 </script>
 </body>
 </html>
+      
