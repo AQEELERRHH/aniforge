@@ -1086,76 +1086,55 @@ async function callGroq(prompt, jsonMode = true) {
 }
 
 // ============================================================
-// HUGGINGFACE IMAGE GENERATION
+//  IMAGE GENERATION - POLLINATIONS AI 
 // ============================================================
 async function generateAnimeImage(prompt) {
-  const key = localStorage.getItem('aniforge_hf_key');
-  if (!key) {
-    debug('No HF key - skipping image', 'warn');
+  try {
+    // Pollinations AI - completely free, no signup needed
+    const fullPrompt = `anime style, ${prompt}, high quality, detailed, vibrant colors, cinematic lighting, masterpiece`;
+    
+    // URL encode the prompt
+    const encodedPrompt = encodeURIComponent(fullPrompt);
+    
+    // Random seed for variety
+    const seed = Math.floor(Math.random() * 1000000);
+    
+    // Pollinations URL - direct image URL (no API call needed!)
+    const imageUrl = `https://image.pollinations.ai/prompt/${encodedPrompt}?width=768&height=432&seed=${seed}&model=flux&nologo=true`;
+    
+    debug(`🎨 Generating image via Pollinations...`, 'info');
+    
+    // Pre-load the image to verify it works
+    return new Promise((resolve) => {
+      const img = new Image();
+      img.crossOrigin = 'anonymous';
+      
+      img.onload = () => {
+        debug(`✅ Image loaded successfully`, 'info');
+        resolve(imageUrl);
+      };
+      
+      img.onerror = () => {
+        debug(`❌ Image failed to load`, 'error');
+        resolve(null);
+      };
+      
+      // Timeout after 30 seconds
+      setTimeout(() => {
+        if (!img.complete) {
+          debug(`⏱️ Image generation timeout`, 'warn');
+          resolve(imageUrl); // Return anyway - may load later
+        }
+      }, 30000);
+      
+      img.src = imageUrl;
+    });
+    
+  } catch (e) {
+    debug(`❌ Image error: ${e.message}`, 'error');
     return null;
   }
-
-  const fullPrompt = `anime style illustration, ${prompt}, high quality, detailed, vibrant colors, cinematic lighting, masterpiece, beautiful anime art`;
-  
-  for (const model of HF_MODELS) {
-    try {
-      debug(`🎨 Trying ${model}`, 'info');
-      
-      const res = await fetch(`https://api-inference.huggingface.co/models/${model}`, {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${key}`,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ 
-          inputs: fullPrompt, 
-          parameters: {
-            negative_prompt: 'low quality, blurry, bad anatomy, watermark, text, ugly',
-            num_inference_steps: 20,
-            guidance_scale: 7.5
-          },
-          options: { wait_for_model: true } 
-        })
-      });
-
-      if (!res.ok) {
-        const errText = await res.text();
-        debug(`❌ HF ${model}: ${res.status}`, 'error');
-        
-        if (res.status === 503) {
-          debug(`⏳ ${model} loading, waiting 20s...`, 'warn');
-          await new Promise(r => setTimeout(r, 20000));
-          continue;
-        }
-        continue;
-      }
-
-      const contentType = res.headers.get('content-type');
-      if (contentType && contentType.includes('application/json')) {
-        const errData = await res.json();
-        debug(`❌ HF error: ${errData.error}`, 'error');
-        continue;
-      }
-
-      const blob = await res.blob();
-      
-      if (blob.size < 1000) {
-        debug(`❌ Tiny blob (${blob.size}b), skipping`, 'error');
-        continue;
-      }
-
-      debug(`✅ Image generated (${(blob.size/1024).toFixed(1)}KB)`, 'info');
-      return URL.createObjectURL(blob);
-
-    } catch (e) {
-      debug(`❌ HF ${model} error: ${e.message}`, 'error');
-      continue;
-    }
-  }
-
-  return null;
 }
-
 // ============================================================
 // MAIN FORGE FUNCTION
 // ============================================================
