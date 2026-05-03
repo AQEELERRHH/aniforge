@@ -1,0 +1,983 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AniForge — Where Stories Are Forged</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Nunito:wght@400;600;700;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #0a0a0f;
+    --paper: #f5f0e8;
+    --ember: #ff4d1c;
+    --ember2: #ff8c42;
+    --steel: #1a1a2e;
+    --glow: #00d4ff;
+    --gold: #ffd700;
+    --dim: #2a2a3e;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--ink);
+    color: var(--paper);
+    font-family: 'Nunito', sans-serif;
+    overflow-x: hidden;
+  }
+
+  /* NOISE OVERLAY */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 1000;
+    opacity: 0.3;
+  }
+
+  /* NAV */
+  nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.2rem 4rem;
+    border-bottom: 1px solid rgba(255,77,28,0.2);
+    position: sticky;
+    top: 0;
+    background: rgba(10,10,15,0.92);
+    backdrop-filter: blur(20px);
+    z-index: 100;
+  }
+
+  .logo {
+    font-family: 'Bebas Neue', cursive;
+    font-size: 2rem;
+    letter-spacing: 4px;
+    background: linear-gradient(135deg, var(--ember), var(--ember2), var(--gold));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .logo span {
+    -webkit-text-fill-color: var(--paper);
+    opacity: 0.4;
+    font-size: 0.9rem;
+    letter-spacing: 2px;
+  }
+
+  nav .links {
+    display: flex;
+    gap: 2rem;
+    align-items: center;
+  }
+
+  nav a {
+    color: var(--paper);
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 0.85rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    opacity: 0.7;
+    transition: opacity 0.2s, color 0.2s;
+  }
+
+  nav a:hover { opacity: 1; color: var(--ember); }
+
+  .btn-forge {
+    background: var(--ember);
+    color: white !important;
+    opacity: 1 !important;
+    padding: 0.6rem 1.4rem;
+    border-radius: 4px;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.8rem !important;
+    transition: background 0.2s, transform 0.1s !important;
+  }
+
+  .btn-forge:hover {
+    background: var(--ember2) !important;
+    transform: translateY(-1px);
+    color: white !important;
+  }
+
+  #wallet-btn {
+    background: transparent;
+    border: 1px solid var(--glow);
+    color: var(--glow) !important;
+    opacity: 1 !important;
+    padding: 0.5rem 1.2rem;
+    border-radius: 4px;
+    cursor: pointer;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.75rem;
+    letter-spacing: 1px;
+    transition: background 0.2s !important;
+  }
+
+  #wallet-btn:hover { background: rgba(0,212,255,0.1) !important; }
+
+  /* HERO */
+  .hero {
+    min-height: 90vh;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+    padding: 4rem;
+    gap: 4rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero::after {
+    content: 'ANIFORGE';
+    position: absolute;
+    font-family: 'Bebas Neue', cursive;
+    font-size: 22vw;
+    color: rgba(255,77,28,0.03);
+    right: -2rem;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
+    letter-spacing: -2px;
+    line-height: 1;
+  }
+
+  .hero-text h1 {
+    font-family: 'Bebas Neue', cursive;
+    font-size: clamp(3rem, 6vw, 5.5rem);
+    line-height: 0.95;
+    letter-spacing: 2px;
+    margin-bottom: 1.5rem;
+  }
+
+  .hero-text h1 em {
+    font-style: normal;
+    background: linear-gradient(135deg, var(--ember), var(--ember2));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .hero-text p {
+    font-size: 1.05rem;
+    line-height: 1.7;
+    opacity: 0.7;
+    max-width: 480px;
+    margin-bottom: 2.5rem;
+  }
+
+  .hero-cta {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .cta-primary {
+    background: linear-gradient(135deg, var(--ember), var(--ember2));
+    color: white;
+    padding: 1rem 2.5rem;
+    border: none;
+    border-radius: 4px;
+    font-family: 'Bebas Neue', cursive;
+    font-size: 1.2rem;
+    letter-spacing: 3px;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-block;
+    transition: transform 0.2s, box-shadow 0.2s;
+    box-shadow: 0 4px 24px rgba(255,77,28,0.4);
+  }
+
+  .cta-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 32px rgba(255,77,28,0.6);
+  }
+
+  .cta-secondary {
+    background: transparent;
+    color: var(--paper);
+    padding: 1rem 2.5rem;
+    border: 1px solid rgba(245,240,232,0.3);
+    border-radius: 4px;
+    font-family: 'Bebas Neue', cursive;
+    font-size: 1.2rem;
+    letter-spacing: 3px;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-block;
+    transition: border-color 0.2s, transform 0.2s;
+  }
+
+  .cta-secondary:hover {
+    border-color: var(--paper);
+    transform: translateY(-2px);
+  }
+
+  /* HERO VISUAL */
+  .hero-visual {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    gap: 1rem;
+    height: 500px;
+  }
+
+  .hero-card {
+    border-radius: 8px;
+    overflow: hidden;
+    position: relative;
+    background: var(--steel);
+    border: 1px solid rgba(255,255,255,0.06);
+  }
+
+  .hero-card:first-child {
+    grid-row: 1 / 3;
+    background: linear-gradient(160deg, #1a0a2e, #0d1a3a);
+  }
+
+  .hero-card-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0.6;
+  }
+
+  .hero-card-label {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 1rem;
+    background: linear-gradient(transparent, rgba(0,0,0,0.9));
+    font-size: 0.75rem;
+    letter-spacing: 1px;
+    font-weight: 700;
+    text-transform: uppercase;
+  }
+
+  .tag {
+    display: inline-block;
+    background: var(--ember);
+    color: white;
+    font-size: 0.65rem;
+    padding: 0.2rem 0.5rem;
+    border-radius: 2px;
+    letter-spacing: 1px;
+    font-weight: 700;
+    text-transform: uppercase;
+    margin-bottom: 0.3rem;
+  }
+
+  .tag.blue { background: var(--glow); color: var(--ink); }
+  .tag.gold { background: var(--gold); color: var(--ink); }
+
+  /* STATS BAR */
+  .stats {
+    background: var(--steel);
+    border-top: 1px solid rgba(255,77,28,0.15);
+    border-bottom: 1px solid rgba(255,77,28,0.15);
+    padding: 2rem 4rem;
+    display: flex;
+    gap: 4rem;
+    justify-content: center;
+  }
+
+  .stat {
+    text-align: center;
+  }
+
+  .stat-num {
+    font-family: 'Bebas Neue', cursive;
+    font-size: 2.5rem;
+    color: var(--ember);
+    letter-spacing: 2px;
+  }
+
+  .stat-label {
+    font-size: 0.75rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    opacity: 0.5;
+    font-family: 'Space Mono', monospace;
+  }
+
+  /* SECTION */
+  .section {
+    padding: 5rem 4rem;
+  }
+
+  .section-header {
+    display: flex;
+    align-items: baseline;
+    gap: 1.5rem;
+    margin-bottom: 3rem;
+  }
+
+  .section-title {
+    font-family: 'Bebas Neue', cursive;
+    font-size: 2.5rem;
+    letter-spacing: 3px;
+  }
+
+  .section-sub {
+    font-size: 0.8rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    opacity: 0.4;
+    font-family: 'Space Mono', monospace;
+  }
+
+  /* EPISODES GRID */
+  .episodes-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .episode-card {
+    background: var(--steel);
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1px solid rgba(255,255,255,0.06);
+    cursor: pointer;
+    transition: transform 0.25s, border-color 0.25s;
+    text-decoration: none;
+    color: var(--paper);
+    display: block;
+  }
+
+  .episode-card:hover {
+    transform: translateY(-6px);
+    border-color: rgba(255,77,28,0.4);
+  }
+
+  .episode-thumb {
+    width: 100%;
+    height: 160px;
+    background: linear-gradient(135deg, #1a0a2e, #0d1a3a, #2a0a1e);
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Bebas Neue', cursive;
+    font-size: 3rem;
+    overflow: hidden;
+  }
+
+  .episode-thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .episode-thumb .thumb-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(transparent 40%, rgba(0,0,0,0.7));
+  }
+
+  .ep-num {
+    position: absolute;
+    top: 0.7rem;
+    left: 0.7rem;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.7rem;
+    background: rgba(0,0,0,0.7);
+    padding: 0.2rem 0.5rem;
+    border-radius: 3px;
+    letter-spacing: 1px;
+  }
+
+  .ep-status {
+    position: absolute;
+    top: 0.7rem;
+    right: 0.7rem;
+    font-size: 0.65rem;
+    padding: 0.2rem 0.5rem;
+    border-radius: 3px;
+    letter-spacing: 1px;
+    font-weight: 700;
+    text-transform: uppercase;
+  }
+
+  .ep-status.ai { background: var(--ember); color: white; }
+  .ep-status.new { background: var(--glow); color: var(--ink); }
+
+  .episode-info {
+    padding: 1.2rem;
+  }
+
+  .episode-title {
+    font-family: 'Bebas Neue', cursive;
+    font-size: 1.2rem;
+    letter-spacing: 1px;
+    margin-bottom: 0.4rem;
+    line-height: 1.2;
+  }
+
+  .episode-meta {
+    font-size: 0.75rem;
+    opacity: 0.5;
+    font-family: 'Space Mono', monospace;
+    margin-bottom: 0.8rem;
+  }
+
+  .episode-desc {
+    font-size: 0.85rem;
+    opacity: 0.65;
+    line-height: 1.5;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .episode-footer {
+    padding: 0.8rem 1.2rem;
+    border-top: 1px solid rgba(255,255,255,0.06);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .vote-btn {
+    background: transparent;
+    border: 1px solid rgba(255,77,28,0.3);
+    color: var(--ember);
+    padding: 0.35rem 0.8rem;
+    border-radius: 3px;
+    cursor: pointer;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.75rem;
+    transition: background 0.2s;
+  }
+
+  .vote-btn:hover { background: rgba(255,77,28,0.15); }
+
+  .view-count {
+    font-size: 0.75rem;
+    opacity: 0.4;
+    font-family: 'Space Mono', monospace;
+  }
+
+  /* IDEA SUBMIT */
+  .idea-section {
+    padding: 5rem 4rem;
+    background: var(--steel);
+    border-top: 1px solid rgba(255,77,28,0.15);
+  }
+
+  .idea-inner {
+    max-width: 700px;
+    margin: 0 auto;
+    text-align: center;
+  }
+
+  .idea-inner h2 {
+    font-family: 'Bebas Neue', cursive;
+    font-size: 3rem;
+    letter-spacing: 3px;
+    margin-bottom: 1rem;
+  }
+
+  .idea-inner p {
+    opacity: 0.6;
+    margin-bottom: 2rem;
+    line-height: 1.7;
+  }
+
+  .idea-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .idea-input {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.1);
+    color: var(--paper);
+    padding: 1rem 1.2rem;
+    border-radius: 6px;
+    font-family: 'Nunito', sans-serif;
+    font-size: 1rem;
+    outline: none;
+    transition: border-color 0.2s;
+    resize: vertical;
+    min-height: 80px;
+  }
+
+  .idea-input:focus {
+    border-color: var(--ember);
+  }
+
+  .idea-input::placeholder { opacity: 0.4; }
+
+  .submit-row {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .btn-submit {
+    background: linear-gradient(135deg, var(--ember), var(--ember2));
+    color: white;
+    border: none;
+    padding: 0.9rem 2.5rem;
+    border-radius: 4px;
+    font-family: 'Bebas Neue', cursive;
+    font-size: 1.1rem;
+    letter-spacing: 3px;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+
+  .btn-submit:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 24px rgba(255,77,28,0.5);
+  }
+
+  .chain-note {
+    font-size: 0.75rem;
+    opacity: 0.4;
+    font-family: 'Space Mono', monospace;
+    letter-spacing: 1px;
+  }
+
+  /* HOW IT WORKS */
+  .how-section {
+    padding: 5rem 4rem;
+  }
+
+  .how-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+    margin-top: 3rem;
+  }
+
+  .how-card {
+    background: var(--steel);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 8px;
+    padding: 2rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .how-card::before {
+    content: attr(data-num);
+    position: absolute;
+    top: -0.5rem;
+    right: 1rem;
+    font-family: 'Bebas Neue', cursive;
+    font-size: 6rem;
+    opacity: 0.05;
+    line-height: 1;
+    color: var(--ember);
+  }
+
+  .how-icon {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+  }
+
+  .how-title {
+    font-family: 'Bebas Neue', cursive;
+    font-size: 1.4rem;
+    letter-spacing: 2px;
+    margin-bottom: 0.7rem;
+    color: var(--ember2);
+  }
+
+  .how-desc {
+    font-size: 0.9rem;
+    line-height: 1.6;
+    opacity: 0.6;
+  }
+
+  /* EMPTY STATE */
+  .empty-state {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 5rem 2rem;
+    opacity: 0.5;
+  }
+
+  .empty-state .big-icon {
+    font-size: 4rem;
+    margin-bottom: 1rem;
+  }
+
+  .empty-state h3 {
+    font-family: 'Bebas Neue', cursive;
+    font-size: 1.8rem;
+    letter-spacing: 2px;
+    margin-bottom: 0.5rem;
+  }
+
+  .empty-state p {
+    font-size: 0.9rem;
+    opacity: 0.6;
+  }
+
+  /* TOAST */
+  .toast {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    background: var(--steel);
+    border: 1px solid var(--ember);
+    color: var(--paper);
+    padding: 1rem 1.5rem;
+    border-radius: 6px;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.85rem;
+    z-index: 999;
+    transform: translateY(100px);
+    opacity: 0;
+    transition: transform 0.3s, opacity 0.3s;
+    max-width: 320px;
+  }
+
+  .toast.show {
+    transform: translateY(0);
+    opacity: 1;
+  }
+
+  /* FOOTER */
+  footer {
+    border-top: 1px solid rgba(255,255,255,0.06);
+    padding: 2rem 4rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    opacity: 0.4;
+    font-size: 0.8rem;
+    font-family: 'Space Mono', monospace;
+  }
+
+  /* ANIME BG ELEMENTS */
+  .bg-element {
+    position: absolute;
+    pointer-events: none;
+    opacity: 0.03;
+  }
+
+  /* ANIM */
+  @keyframes fadeSlide {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .hero-text { animation: fadeSlide 0.7s ease forwards; }
+  .hero-visual { animation: fadeSlide 0.7s 0.15s ease forwards; opacity: 0; }
+
+  @media (max-width: 900px) {
+    nav { padding: 1rem 1.5rem; }
+    .hero { grid-template-columns: 1fr; padding: 2rem 1.5rem; }
+    .hero-visual { display: none; }
+    .section, .idea-section, .how-section { padding: 3rem 1.5rem; }
+    .stats { padding: 2rem 1.5rem; gap: 2rem; flex-wrap: wrap; }
+    .how-grid { grid-template-columns: 1fr; }
+    footer { padding: 1.5rem; flex-direction: column; gap: 0.5rem; text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="logo">Ani<br><span>FORGE</span></div>
+  <div class="links">
+    <a href="index.html">Browse</a>
+    <a href="forge.html" class="btn-forge">⚡ Forge Episode</a>
+    <button id="wallet-btn" onclick="connectWallet()">Connect Wallet</button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-text">
+    <h1>AI Forges<br><em>Anime Stories</em><br>You Watch Free</h1>
+    <p>An AI agent writes the scripts, designs the characters, and generates every scene. New anime episodes forged daily — on Base blockchain, forever.</p>
+    <div class="hero-cta">
+      <a href="forge.html" class="cta-primary">⚡ Forge New Episode</a>
+      <a href="#episodes" class="cta-secondary">Browse Episodes</a>
+    </div>
+  </div>
+  <div class="hero-visual">
+    <div class="hero-card" style="background: linear-gradient(160deg, #1a0827, #0d1040);">
+      <div class="thumb-overlay"></div>
+      <div style="position:absolute;bottom:1rem;left:1rem;right:1rem;">
+        <span class="tag">AI Generated</span>
+        <div class="hero-card-label">Chronicles of the Void Walker</div>
+      </div>
+    </div>
+    <div class="hero-card" style="background: linear-gradient(160deg, #0a1a10, #1a2a0a);">
+      <div style="position:absolute;bottom:1rem;left:1rem;right:1rem;">
+        <span class="tag gold">Trending</span>
+        <div style="font-size:0.8rem;font-weight:700;margin-top:0.3rem;">Steel Fang Dojo</div>
+      </div>
+    </div>
+    <div class="hero-card" style="background: linear-gradient(160deg, #1a0a0a, #2a1010);">
+      <div style="position:absolute;bottom:1rem;left:1rem;right:1rem;">
+        <span class="tag blue">New</span>
+        <div style="font-size:0.8rem;font-weight:700;margin-top:0.3rem;">Neon Samurai</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STATS -->
+<div class="stats">
+  <div class="stat">
+    <div class="stat-num" id="ep-count">0</div>
+    <div class="stat-label">Episodes Forged</div>
+  </div>
+  <div class="stat">
+    <div class="stat-num" id="idea-count">0</div>
+    <div class="stat-label">Ideas Submitted</div>
+  </div>
+  <div class="stat">
+    <div class="stat-num">BASE</div>
+    <div class="stat-label">Network</div>
+  </div>
+  <div class="stat">
+    <div class="stat-num">FREE</div>
+    <div class="stat-label">To Watch</div>
+  </div>
+</div>
+
+<!-- EPISODES -->
+<section class="section" id="episodes">
+  <div class="section-header">
+    <div class="section-title">Latest Episodes</div>
+    <div class="section-sub">AI-generated · onchain logged</div>
+  </div>
+  <div class="episodes-grid" id="episodes-grid">
+    <!-- populated by JS -->
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="how-section">
+  <div class="section-header">
+    <div class="section-title">How AniForge Works</div>
+  </div>
+  <div class="how-grid">
+    <div class="how-card" data-num="01">
+      <div class="how-icon">🤖</div>
+      <div class="how-title">AI Writes the Story</div>
+      <div class="how-desc">Gemini AI crafts full anime scripts — characters, dialogue, world-building, scene breakdowns — based on your ideas or its own creativity.</div>
+    </div>
+    <div class="how-card" data-num="02">
+      <div class="how-icon">🎨</div>
+      <div class="how-title">Images Get Generated</div>
+      <div class="how-desc">Each scene is brought to life with anime-style AI artwork via Hugging Face. Characters, environments, action sequences — all generated.</div>
+    </div>
+    <div class="how-card" data-num="03">
+      <div class="how-icon">⛓️</div>
+      <div class="how-title">Logged On Base</div>
+      <div class="how-desc">Every episode and story idea is recorded on Base blockchain. Immutable, permanent, and open for anyone to see and build upon.</div>
+    </div>
+  </div>
+</section>
+
+<!-- SUBMIT IDEA -->
+<section class="idea-section" id="submit-idea">
+  <div class="idea-inner">
+    <h2>Submit a Story Idea</h2>
+    <p>Got an anime concept? Drop it here. The AI agent will pick up ideas and forge them into full episodes. Best ideas get logged on Base forever.</p>
+    <div class="idea-form">
+      <input class="idea-input" id="idea-title" placeholder="Story title (e.g. 'A sword spirit awakens in modern Tokyo')" style="min-height:50px;resize:none;">
+      <textarea class="idea-input" id="idea-desc" placeholder="Describe your idea — characters, setting, the vibe... anything helps."></textarea>
+      <div class="submit-row">
+        <button class="btn-submit" onclick="submitIdea()">⚡ Submit Idea</button>
+        <div class="chain-note">Logs on Base Sepolia (testnet)</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div>ANIFORGE — Built on Base · Stories Forged by AI</div>
+  <div>Base Sepolia Testnet</div>
+</footer>
+
+<div class="toast" id="toast"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js"></script>
+<script>
+  // ============================================================
+  // CONFIG
+  // ============================================================
+  const BASE_SEPOLIA = {
+    chainId: '0x14a34',
+    chainName: 'Base Sepolia',
+    nativeCurrency: { name: 'Ether', symbol: 'ETH', decimals: 18 },
+    rpcUrls: ['https://sepolia.base.org'],
+    blockExplorerUrls: ['https://sepolia-explorer.base.org']
+  };
+
+  let walletAddress = null;
+
+  // ============================================================
+  // WALLET
+  // ============================================================
+  async function connectWallet() {
+    if (!window.ethereum) {
+      showToast('❌ MetaMask not found. Install it first!');
+      return;
+    }
+    try {
+      const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+      walletAddress = accounts[0];
+
+      // Switch to Base Sepolia
+      try {
+        await window.ethereum.request({
+          method: 'wallet_switchEthereumChain',
+          params: [{ chainId: BASE_SEPOLIA.chainId }]
+        });
+      } catch (switchErr) {
+        if (switchErr.code === 4902) {
+          await window.ethereum.request({
+            method: 'wallet_addEthereumChain',
+            params: [BASE_SEPOLIA]
+          });
+        }
+      }
+
+      const short = walletAddress.slice(0,6) + '...' + walletAddress.slice(-4);
+      document.getElementById('wallet-btn').textContent = short;
+      document.getElementById('wallet-btn').style.borderColor = '#00d4ff';
+      showToast('✅ Wallet connected: ' + short);
+    } catch (e) {
+      showToast('❌ Connection rejected');
+    }
+  }
+
+  // ============================================================
+  // TOAST
+  // ============================================================
+  function showToast(msg, duration = 3500) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), duration);
+  }
+
+  // ============================================================
+  // LOAD EPISODES
+  // ============================================================
+  function loadEpisodes() {
+    const episodes = JSON.parse(localStorage.getItem('aniforge_episodes') || '[]');
+    const grid = document.getElementById('episodes-grid');
+    const counter = document.getElementById('ep-count');
+    counter.textContent = episodes.length;
+
+    if (episodes.length === 0) {
+      grid.innerHTML = `
+        <div class="empty-state">
+          <div class="big-icon">⚡</div>
+          <h3>No Episodes Yet</h3>
+          <p>Be the first to forge an anime episode with AI</p>
+          <br>
+          <a href="forge.html" class="cta-primary" style="margin-top:1rem;">Forge First Episode</a>
+        </div>`;
+      return;
+    }
+
+    grid.innerHTML = episodes.reverse().map((ep, i) => `
+      <a href="watch.html?id=${ep.id}" class="episode-card">
+        <div class="episode-thumb" style="background: ${ep.thumbColor || 'linear-gradient(135deg, #1a0a2e, #0d1a3a)'}">
+          ${ep.scenes && ep.scenes[0] && ep.scenes[0].imageUrl
+            ? `<img src="${ep.scenes[0].imageUrl}" alt="${ep.title}" onerror="this.style.display='none'">`
+            : `<span style="opacity:0.15;font-family:'Bebas Neue',cursive">${ep.title.charAt(0)}</span>`
+          }
+          <div class="thumb-overlay"></div>
+          <span class="ep-num">EP ${String(episodes.length - i).padStart(2,'0')}</span>
+          <span class="ep-status ai">AI</span>
+        </div>
+        <div class="episode-info">
+          <div class="episode-title">${ep.title}</div>
+          <div class="episode-meta">${ep.genre || 'Action'} · ${ep.scenes ? ep.scenes.length : 0} scenes · ${new Date(ep.createdAt).toLocaleDateString()}</div>
+          <div class="episode-desc">${ep.synopsis || ''}</div>
+        </div>
+        <div class="episode-footer">
+          <button class="vote-btn" onclick="event.preventDefault();voteEp('${ep.id}',this)">
+            ♥ ${ep.votes || 0}
+          </button>
+          <span class="view-count">👁 ${ep.views || 0} views</span>
+        </div>
+      </a>
+    `).join('');
+  }
+
+  function voteEp(id, btn) {
+    const episodes = JSON.parse(localStorage.getItem('aniforge_episodes') || '[]');
+    const ep = episodes.find(e => e.id === id);
+    if (!ep) return;
+    ep.votes = (ep.votes || 0) + 1;
+    localStorage.setItem('aniforge_episodes', JSON.stringify(episodes));
+    btn.textContent = `♥ ${ep.votes}`;
+    showToast('❤️ Voted!');
+  }
+
+  // ============================================================
+  // SUBMIT IDEA
+  // ============================================================
+  async function submitIdea() {
+    const title = document.getElementById('idea-title').value.trim();
+    const desc = document.getElementById('idea-desc').value.trim();
+    if (!title) { showToast('❌ Add a title for your idea'); return; }
+
+    const ideas = JSON.parse(localStorage.getItem('aniforge_ideas') || '[]');
+    const idea = {
+      id: Date.now().toString(),
+      title, desc,
+      submittedAt: new Date().toISOString(),
+      wallet: walletAddress || 'anonymous'
+    };
+    ideas.push(idea);
+    localStorage.setItem('aniforge_ideas', JSON.stringify(ideas));
+    document.getElementById('idea-count').textContent = ideas.length;
+
+    // Try log onchain if wallet connected
+    if (walletAddress && window.ethereum) {
+      showToast('⛓️ Logging idea on Base Sepolia...');
+      try {
+        const provider = new ethers.providers.Web3Provider(window.ethereum);
+        const signer = provider.getSigner();
+        const ideaHash = ethers.utils.hexlify(ethers.utils.toUtf8Bytes(JSON.stringify({title, id: idea.id})));
+        const tx = await signer.sendTransaction({
+          to: walletAddress,
+          value: ethers.utils.parseEther('0'),
+          data: ideaHash.slice(0, 66)
+        });
+        showToast('✅ Idea logged onchain! TX: ' + tx.hash.slice(0,16) + '...', 5000);
+      } catch (e) {
+        showToast('⚠️ Saved locally (connect wallet to log onchain)');
+      }
+    } else {
+      showToast('💡 Idea saved! Connect wallet to log it onchain.');
+    }
+
+    document.getElementById('idea-title').value = '';
+    document.getElementById('idea-desc').value = '';
+  }
+
+  // ============================================================
+  // INIT
+  // ============================================================
+  loadEpisodes();
+  const ideas = JSON.parse(localStorage.getItem('aniforge_ideas') || '[]');
+  document.getElementById('idea-count').textContent = ideas.length;
+</script>
+</body>
+</html>

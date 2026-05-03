@@ -1,0 +1,1154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AniForge — The Forge</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Nunito:wght@400;600;700;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #0a0a0f;
+    --paper: #f5f0e8;
+    --ember: #ff4d1c;
+    --ember2: #ff8c42;
+    --steel: #1a1a2e;
+    --glow: #00d4ff;
+    --gold: #ffd700;
+    --green: #00ff88;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--ink);
+    color: var(--paper);
+    font-family: 'Nunito', sans-serif;
+    min-height: 100vh;
+  }
+
+  nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.2rem 3rem;
+    border-bottom: 1px solid rgba(255,77,28,0.2);
+    background: rgba(10,10,15,0.95);
+    backdrop-filter: blur(20px);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .logo {
+    font-family: 'Bebas Neue', cursive;
+    font-size: 1.8rem;
+    letter-spacing: 4px;
+    background: linear-gradient(135deg, var(--ember), var(--ember2), var(--gold));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-decoration: none;
+  }
+
+  .logo span {
+    -webkit-text-fill-color: rgba(245,240,232,0.4);
+    font-size: 0.8rem;
+    letter-spacing: 2px;
+  }
+
+  nav .links { display: flex; gap: 1.5rem; align-items: center; }
+
+  nav a {
+    color: var(--paper);
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 0.8rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    opacity: 0.6;
+    transition: opacity 0.2s;
+  }
+  nav a:hover { opacity: 1; color: var(--ember); }
+
+  #wallet-btn {
+    background: transparent;
+    border: 1px solid var(--glow);
+    color: var(--glow);
+    padding: 0.45rem 1rem;
+    border-radius: 4px;
+    cursor: pointer;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.72rem;
+    letter-spacing: 1px;
+  }
+
+  /* MAIN LAYOUT */
+  .forge-layout {
+    display: grid;
+    grid-template-columns: 380px 1fr;
+    min-height: calc(100vh - 65px);
+  }
+
+  /* LEFT PANEL */
+  .forge-panel {
+    background: var(--steel);
+    border-right: 1px solid rgba(255,255,255,0.06);
+    padding: 2rem;
+    overflow-y: auto;
+    max-height: calc(100vh - 65px);
+    position: sticky;
+    top: 65px;
+  }
+
+  .forge-title {
+    font-family: 'Bebas Neue', cursive;
+    font-size: 2rem;
+    letter-spacing: 3px;
+    margin-bottom: 0.3rem;
+  }
+
+  .forge-sub {
+    font-size: 0.75rem;
+    opacity: 0.4;
+    font-family: 'Space Mono', monospace;
+    letter-spacing: 1px;
+    margin-bottom: 2rem;
+  }
+
+  .field-label {
+    font-size: 0.72rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    opacity: 0.5;
+    font-family: 'Space Mono', monospace;
+    margin-bottom: 0.5rem;
+    margin-top: 1.2rem;
+  }
+
+  .field-label:first-of-type { margin-top: 0; }
+
+  .forge-input {
+    width: 100%;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.1);
+    color: var(--paper);
+    padding: 0.8rem 1rem;
+    border-radius: 6px;
+    font-family: 'Nunito', sans-serif;
+    font-size: 0.95rem;
+    outline: none;
+    transition: border-color 0.2s;
+    resize: vertical;
+  }
+
+  .forge-input:focus { border-color: var(--ember); }
+  .forge-input::placeholder { opacity: 0.35; }
+
+  .genre-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.5rem;
+  }
+
+  .genre-btn {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.1);
+    color: var(--paper);
+    padding: 0.5rem;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.78rem;
+    text-align: center;
+    transition: all 0.2s;
+    font-family: 'Space Mono', monospace;
+  }
+
+  .genre-btn:hover { border-color: var(--ember); color: var(--ember); }
+  .genre-btn.active { background: var(--ember); border-color: var(--ember); color: white; }
+
+  .scene-count-row {
+    display: flex;
+    gap: 0.5rem;
+  }
+
+  .scene-btn {
+    flex: 1;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.1);
+    color: var(--paper);
+    padding: 0.5rem;
+    border-radius: 4px;
+    cursor: pointer;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.85rem;
+    transition: all 0.2s;
+  }
+
+  .scene-btn.active { background: var(--ember); border-color: var(--ember); color: white; }
+
+  /* API KEYS SECTION */
+  .api-section {
+    margin-top: 1.5rem;
+    padding: 1.2rem;
+    background: rgba(0,212,255,0.05);
+    border: 1px solid rgba(0,212,255,0.15);
+    border-radius: 6px;
+  }
+
+  .api-section h4 {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.75rem;
+    color: var(--glow);
+    letter-spacing: 2px;
+    margin-bottom: 1rem;
+  }
+
+  .api-input {
+    width: 100%;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(0,212,255,0.2);
+    color: var(--paper);
+    padding: 0.65rem 0.9rem;
+    border-radius: 5px;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.75rem;
+    outline: none;
+    margin-bottom: 0.6rem;
+  }
+
+  .api-input:focus { border-color: var(--glow); }
+
+  .api-save-btn {
+    width: 100%;
+    background: rgba(0,212,255,0.1);
+    border: 1px solid rgba(0,212,255,0.3);
+    color: var(--glow);
+    padding: 0.5rem;
+    border-radius: 4px;
+    cursor: pointer;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.75rem;
+    letter-spacing: 1px;
+    transition: background 0.2s;
+  }
+
+  .api-save-btn:hover { background: rgba(0,212,255,0.2); }
+
+  .api-status {
+    font-size: 0.7rem;
+    margin-top: 0.5rem;
+    font-family: 'Space Mono', monospace;
+    text-align: center;
+    letter-spacing: 1px;
+  }
+
+  /* FORGE BUTTON */
+  .forge-btn {
+    width: 100%;
+    background: linear-gradient(135deg, var(--ember), var(--ember2));
+    border: none;
+    color: white;
+    padding: 1.1rem;
+    border-radius: 6px;
+    font-family: 'Bebas Neue', cursive;
+    font-size: 1.4rem;
+    letter-spacing: 4px;
+    cursor: pointer;
+    margin-top: 1.5rem;
+    transition: transform 0.2s, box-shadow 0.2s, opacity 0.2s;
+    box-shadow: 0 4px 20px rgba(255,77,28,0.4);
+  }
+
+  .forge-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(255,77,28,0.6); }
+  .forge-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+  /* RIGHT PANEL */
+  .forge-output {
+    padding: 2.5rem 3rem;
+    overflow-y: auto;
+  }
+
+  /* IDLE STATE */
+  .idle-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 60vh;
+    text-align: center;
+    opacity: 0.4;
+  }
+
+  .idle-icon {
+    font-size: 5rem;
+    margin-bottom: 1.5rem;
+    animation: pulse 3s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { transform: scale(1); opacity: 0.4; }
+    50% { transform: scale(1.05); opacity: 0.6; }
+  }
+
+  .idle-state h2 {
+    font-family: 'Bebas Neue', cursive;
+    font-size: 2rem;
+    letter-spacing: 3px;
+    margin-bottom: 0.5rem;
+  }
+
+  /* PROGRESS */
+  .progress-section {
+    display: none;
+  }
+
+  .progress-section.active { display: block; }
+
+  .progress-bar-wrap {
+    background: rgba(255,255,255,0.06);
+    border-radius: 4px;
+    height: 6px;
+    overflow: hidden;
+    margin-bottom: 1rem;
+  }
+
+  .progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, var(--ember), var(--ember2));
+    border-radius: 4px;
+    transition: width 0.5s ease;
+    width: 0%;
+  }
+
+  .progress-steps {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    margin-bottom: 2rem;
+  }
+
+  .step {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.8rem;
+    opacity: 0.4;
+    transition: opacity 0.3s;
+  }
+
+  .step.active { opacity: 1; color: var(--ember2); }
+  .step.done { opacity: 0.7; color: var(--green); }
+
+  .step-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: currentColor;
+    flex-shrink: 0;
+  }
+
+  /* RESULT */
+  .result-section { display: none; }
+  .result-section.active { display: block; }
+
+  .ep-header {
+    margin-bottom: 3rem;
+    padding-bottom: 2rem;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+  }
+
+  .ep-badge {
+    display: inline-block;
+    background: var(--ember);
+    color: white;
+    font-size: 0.7rem;
+    padding: 0.3rem 0.7rem;
+    border-radius: 3px;
+    letter-spacing: 2px;
+    font-family: 'Space Mono', monospace;
+    margin-bottom: 1rem;
+  }
+
+  .ep-main-title {
+    font-family: 'Bebas Neue', cursive;
+    font-size: 3rem;
+    letter-spacing: 3px;
+    line-height: 1;
+    margin-bottom: 0.8rem;
+  }
+
+  .ep-synopsis {
+    font-size: 1rem;
+    line-height: 1.7;
+    opacity: 0.7;
+    max-width: 680px;
+    margin-bottom: 1.5rem;
+  }
+
+  .ep-meta-row {
+    display: flex;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+  }
+
+  .ep-meta-item {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.75rem;
+    opacity: 0.5;
+  }
+
+  .ep-meta-item strong {
+    opacity: 1;
+    color: var(--ember2);
+    display: block;
+    font-size: 0.65rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 0.2rem;
+  }
+
+  /* CHARACTERS */
+  .cast-section { margin-bottom: 3rem; }
+
+  .section-label {
+    font-family: 'Bebas Neue', cursive;
+    font-size: 1.4rem;
+    letter-spacing: 3px;
+    margin-bottom: 1rem;
+    color: var(--ember2);
+  }
+
+  .cast-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 1rem;
+  }
+
+  .char-card {
+    background: var(--steel);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 6px;
+    padding: 1rem;
+    text-align: center;
+  }
+
+  .char-avatar {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    margin: 0 auto 0.8rem;
+    object-fit: cover;
+    border: 2px solid var(--ember);
+    background: linear-gradient(135deg, var(--steel), #2a0a1e);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Bebas Neue', cursive;
+    font-size: 1.5rem;
+    color: var(--ember);
+  }
+
+  .char-name {
+    font-family: 'Bebas Neue', cursive;
+    font-size: 1rem;
+    letter-spacing: 1px;
+    margin-bottom: 0.3rem;
+  }
+
+  .char-role {
+    font-size: 0.72rem;
+    opacity: 0.5;
+    font-family: 'Space Mono', monospace;
+    margin-bottom: 0.5rem;
+  }
+
+  .char-desc {
+    font-size: 0.78rem;
+    opacity: 0.6;
+    line-height: 1.4;
+  }
+
+  /* SCENES */
+  .scenes-section { margin-bottom: 3rem; }
+
+  .scene-block {
+    background: var(--steel);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 8px;
+    overflow: hidden;
+    margin-bottom: 1.5rem;
+    animation: fadeSlide 0.5s ease forwards;
+    opacity: 0;
+  }
+
+  @keyframes fadeSlide {
+    from { opacity: 0; transform: translateY(15px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .scene-header {
+    padding: 1rem 1.5rem;
+    background: rgba(255,77,28,0.08);
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .scene-num {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.75rem;
+    color: var(--ember);
+    letter-spacing: 2px;
+  }
+
+  .scene-title {
+    font-family: 'Bebas Neue', cursive;
+    font-size: 1.1rem;
+    letter-spacing: 1px;
+  }
+
+  .scene-body {
+    display: grid;
+    grid-template-columns: 300px 1fr;
+  }
+
+  .scene-img-wrap {
+    background: linear-gradient(135deg, #1a0a2e, #0a1040);
+    min-height: 200px;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .scene-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    position: absolute;
+    inset: 0;
+  }
+
+  .img-loading {
+    font-size: 0.75rem;
+    font-family: 'Space Mono', monospace;
+    opacity: 0.5;
+    text-align: center;
+    padding: 1rem;
+    z-index: 1;
+  }
+
+  .img-loading .spinner {
+    width: 24px;
+    height: 24px;
+    border: 2px solid rgba(255,77,28,0.2);
+    border-top-color: var(--ember);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    margin: 0 auto 0.5rem;
+  }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .scene-content {
+    padding: 1.5rem;
+  }
+
+  .scene-narration {
+    font-size: 0.95rem;
+    line-height: 1.7;
+    opacity: 0.75;
+    margin-bottom: 1rem;
+    font-style: italic;
+  }
+
+  .scene-dialogue {
+    border-left: 2px solid var(--ember);
+    padding-left: 1rem;
+  }
+
+  .dialogue-line {
+    margin-bottom: 0.7rem;
+    font-size: 0.9rem;
+    line-height: 1.5;
+  }
+
+  .dialogue-speaker {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.72rem;
+    color: var(--ember2);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+
+  /* ACTIONS */
+  .result-actions {
+    display: flex;
+    gap: 1rem;
+    padding: 2rem 0;
+    border-top: 1px solid rgba(255,255,255,0.06);
+    flex-wrap: wrap;
+  }
+
+  .btn-watch {
+    background: linear-gradient(135deg, var(--ember), var(--ember2));
+    color: white;
+    padding: 0.9rem 2.5rem;
+    border: none;
+    border-radius: 4px;
+    font-family: 'Bebas Neue', cursive;
+    font-size: 1.1rem;
+    letter-spacing: 3px;
+    cursor: pointer;
+    text-decoration: none;
+    transition: transform 0.2s;
+    display: inline-block;
+  }
+  .btn-watch:hover { transform: translateY(-2px); }
+
+  .btn-save {
+    background: transparent;
+    color: var(--glow);
+    border: 1px solid var(--glow);
+    padding: 0.9rem 2rem;
+    border-radius: 4px;
+    font-family: 'Bebas Neue', cursive;
+    font-size: 1.1rem;
+    letter-spacing: 3px;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .btn-save:hover { background: rgba(0,212,255,0.1); }
+
+  .btn-log {
+    background: transparent;
+    color: var(--gold);
+    border: 1px solid var(--gold);
+    padding: 0.9rem 2rem;
+    border-radius: 4px;
+    font-family: 'Bebas Neue', cursive;
+    font-size: 1.1rem;
+    letter-spacing: 3px;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .btn-log:hover { background: rgba(255,215,0,0.1); }
+
+  .toast {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    background: var(--steel);
+    border: 1px solid var(--ember);
+    color: var(--paper);
+    padding: 1rem 1.5rem;
+    border-radius: 6px;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.82rem;
+    z-index: 999;
+    transform: translateY(100px);
+    opacity: 0;
+    transition: transform 0.3s, opacity 0.3s;
+    max-width: 320px;
+  }
+  .toast.show { transform: translateY(0); opacity: 1; }
+
+  @media (max-width: 900px) {
+    .forge-layout { grid-template-columns: 1fr; }
+    .forge-panel { position: relative; top: 0; max-height: none; }
+    .forge-output { padding: 1.5rem; }
+    .scene-body { grid-template-columns: 1fr; }
+    nav { padding: 1rem 1.5rem; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="logo">Ani<span>FORGE</span></a>
+  <div class="links">
+    <a href="index.html">← Browse</a>
+    <button id="wallet-btn" onclick="connectWallet()">Connect Wallet</button>
+  </div>
+</nav>
+
+<div class="forge-layout">
+
+  <!-- LEFT: CONTROLS -->
+  <div class="forge-panel">
+    <div class="forge-title">⚡ The Forge</div>
+    <div class="forge-sub">AI EPISODE GENERATOR</div>
+
+    <div class="field-label">Story Concept (optional)</div>
+    <textarea class="forge-input" id="concept" rows="3" placeholder="e.g. A girl discovers her dead father was a legendary demon hunter..."></textarea>
+
+    <div class="field-label">Genre</div>
+    <div class="genre-grid">
+      <button class="genre-btn active" onclick="setGenre(this,'Action')">⚔️ Action</button>
+      <button class="genre-btn" onclick="setGenre(this,'Romance')">💕 Romance</button>
+      <button class="genre-btn" onclick="setGenre(this,'Horror')">👁️ Horror</button>
+      <button class="genre-btn" onclick="setGenre(this,'Comedy')">😂 Comedy</button>
+      <button class="genre-btn" onclick="setGenre(this,'Sci-Fi')">🚀 Sci-Fi</button>
+      <button class="genre-btn" onclick="setGenre(this,'Fantasy')">🔮 Fantasy</button>
+    </div>
+
+    <div class="field-label">Number of Scenes</div>
+    <div class="scene-count-row">
+      <button class="scene-btn" onclick="setScenes(this,3)">3</button>
+      <button class="scene-btn active" onclick="setScenes(this,5)">5</button>
+      <button class="scene-btn" onclick="setScenes(this,7)">7</button>
+    </div>
+
+    <!-- API KEYS -->
+    <div class="api-section">
+      <h4>🔑 API KEYS (saved locally)</h4>
+
+      <div class="field-label" style="color: var(--glow); margin-top:0">Gemini API Key</div>
+      <input class="api-input" id="gemini-key" type="password" placeholder="AIza...">
+
+      <div class="field-label" style="color: var(--glow)">HuggingFace API Key</div>
+      <input class="api-input" id="hf-key" type="password" placeholder="hf_...">
+
+      <button class="api-save-btn" onclick="saveKeys()">💾 Save Keys</button>
+      <div class="api-status" id="key-status"></div>
+    </div>
+
+    <button class="forge-btn" id="forge-btn" onclick="forgeEpisode()">⚡ FORGE EPISODE</button>
+  </div>
+
+  <!-- RIGHT: OUTPUT -->
+  <div class="forge-output">
+
+    <!-- IDLE -->
+    <div class="idle-state" id="idle-state">
+      <div class="idle-icon">⚡</div>
+      <h2>Ready to Forge</h2>
+      <p style="opacity:0.5;font-size:0.9rem;margin-top:0.5rem">Configure your episode and hit the button</p>
+    </div>
+
+    <!-- PROGRESS -->
+    <div class="progress-section" id="progress-section">
+      <div style="font-family:'Bebas Neue',cursive;font-size:1.8rem;letter-spacing:3px;margin-bottom:1.5rem;">Forging Your Episode...</div>
+      <div class="progress-bar-wrap">
+        <div class="progress-bar" id="progress-bar"></div>
+      </div>
+      <div class="progress-steps">
+        <div class="step" id="step-1"><div class="step-dot"></div> Writing story & characters with Gemini AI</div>
+        <div class="step" id="step-2"><div class="step-dot"></div> Breaking story into scenes</div>
+        <div class="step" id="step-3"><div class="step-dot"></div> Generating anime images for each scene</div>
+        <div class="step" id="step-4"><div class="step-dot"></div> Saving episode to storage</div>
+      </div>
+    </div>
+
+    <!-- RESULT -->
+    <div class="result-section" id="result-section">
+      <!-- populated dynamically -->
+    </div>
+
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js"></script>
+<script>
+// ============================================================
+// STATE
+// ============================================================
+let selectedGenre = 'Action';
+let selectedScenes = 5;
+let walletAddress = null;
+let currentEpisode = null;
+
+const BASE_SEPOLIA = {
+  chainId: '0x14a34',
+  chainName: 'Base Sepolia',
+  nativeCurrency: { name: 'Ether', symbol: 'ETH', decimals: 18 },
+  rpcUrls: ['https://sepolia.base.org'],
+  blockExplorerUrls: ['https://sepolia-explorer.base.org']
+};
+
+// ============================================================
+// INIT
+// ============================================================
+window.onload = () => {
+  const gk = localStorage.getItem('aniforge_gemini_key');
+  const hk = localStorage.getItem('aniforge_hf_key');
+  if (gk) { document.getElementById('gemini-key').value = gk; }
+  if (hk) { document.getElementById('hf-key').value = hk; }
+  updateKeyStatus();
+};
+
+// ============================================================
+// UI HELPERS
+// ============================================================
+function setGenre(btn, genre) {
+  document.querySelectorAll('.genre-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  selectedGenre = genre;
+}
+
+function setScenes(btn, count) {
+  document.querySelectorAll('.scene-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  selectedScenes = count;
+}
+
+function showToast(msg, duration = 4000) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), duration);
+}
+
+function setProgress(pct, stepDone, stepActive) {
+  document.getElementById('progress-bar').style.width = pct + '%';
+  if (stepDone) {
+    for (let i = 1; i <= stepDone; i++) {
+      const el = document.getElementById('step-' + i);
+      if (el) { el.classList.remove('active'); el.classList.add('done'); }
+    }
+  }
+  if (stepActive) {
+    const el = document.getElementById('step-' + stepActive);
+    if (el) el.classList.add('active');
+  }
+}
+
+// ============================================================
+// KEYS
+// ============================================================
+function saveKeys() {
+  const gk = document.getElementById('gemini-key').value.trim();
+  const hk = document.getElementById('hf-key').value.trim();
+  if (gk) localStorage.setItem('aniforge_gemini_key', gk);
+  if (hk) localStorage.setItem('aniforge_hf_key', hk);
+  updateKeyStatus();
+  showToast('🔑 Keys saved!');
+}
+
+function updateKeyStatus() {
+  const gk = localStorage.getItem('aniforge_gemini_key');
+  const hk = localStorage.getItem('aniforge_hf_key');
+  const el = document.getElementById('key-status');
+  if (gk && hk) {
+    el.textContent = '✅ Both keys saved';
+    el.style.color = '#00ff88';
+  } else if (gk) {
+    el.textContent = '⚠️ Gemini key saved. Add HuggingFace.';
+    el.style.color = '#ffd700';
+  } else {
+    el.textContent = '❌ No keys saved yet';
+    el.style.color = '#ff4d1c';
+  }
+}
+
+// ============================================================
+// WALLET
+// ============================================================
+async function connectWallet() {
+  if (!window.ethereum) { showToast('❌ MetaMask not found!'); return; }
+  try {
+    const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+    walletAddress = accounts[0];
+    try {
+      await window.ethereum.request({ method: 'wallet_switchEthereumChain', params: [{ chainId: BASE_SEPOLIA.chainId }] });
+    } catch (e) {
+      if (e.code === 4902) await window.ethereum.request({ method: 'wallet_addEthereumChain', params: [BASE_SEPOLIA] });
+    }
+    const short = walletAddress.slice(0,6) + '...' + walletAddress.slice(-4);
+    document.getElementById('wallet-btn').textContent = short;
+    showToast('✅ ' + short + ' connected');
+  } catch { showToast('❌ Connection rejected'); }
+}
+
+// ============================================================
+// GEMINI STORY WRITER
+// ============================================================
+async function callGemini(prompt) {
+  const key = localStorage.getItem('aniforge_gemini_key');
+  if (!key) throw new Error('No Gemini API key. Add it in the panel.');
+
+  const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${key}`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      contents: [{ parts: [{ text: prompt }] }],
+      generationConfig: { temperature: 0.9, maxOutputTokens: 3000 }
+    })
+  });
+
+  if (!res.ok) {
+    const err = await res.json();
+    throw new Error('Gemini error: ' + (err.error?.message || res.status));
+  }
+  const data = await res.json();
+  return data.candidates[0].content.parts[0].text;
+}
+
+// ============================================================
+// HUGGING FACE IMAGE GEN
+// ============================================================
+async function generateAnimeImage(prompt) {
+  const key = localStorage.getItem('aniforge_hf_key');
+  if (!key) return null;
+
+  // Anime style model — free tier
+  const MODEL = 'hakurei/waifu-diffusion';
+  const fullPrompt = `anime style, high quality, ${prompt}, detailed, cinematic lighting`;
+
+  try {
+    const res = await fetch(`https://api-inference.huggingface.co/models/${MODEL}`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${key}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ inputs: fullPrompt, options: { wait_for_model: true } })
+    });
+
+    if (!res.ok) return null;
+    const blob = await res.blob();
+    return URL.createObjectURL(blob);
+  } catch {
+    return null;
+  }
+}
+
+// ============================================================
+// MAIN FORGE FUNCTION
+// ============================================================
+async function forgeEpisode() {
+  const geminiKey = localStorage.getItem('aniforge_gemini_key');
+  if (!geminiKey) {
+    showToast('❌ Add your Gemini API key first!');
+    return;
+  }
+
+  const concept = document.getElementById('concept').value.trim();
+  const forgeBtn = document.getElementById('forge-btn');
+  forgeBtn.disabled = true;
+
+  // Switch views
+  document.getElementById('idle-state').style.display = 'none';
+  document.getElementById('result-section').classList.remove('active');
+  document.getElementById('progress-section').classList.add('active');
+  setProgress(5, null, 1);
+
+  try {
+    // ---- STEP 1: Write the full story ----
+    const storyPrompt = `You are an anime screenwriter. Write a complete anime episode in JSON format.
+${concept ? `Base concept: "${concept}"` : 'Create an original story.'}
+Genre: ${selectedGenre}
+Number of scenes: ${selectedScenes}
+
+Return ONLY valid JSON, no markdown, no extra text. Structure:
+{
+  "title": "Episode Title",
+  "synopsis": "2-3 sentence plot summary",
+  "genre": "${selectedGenre}",
+  "characters": [
+    { "name": "Name", "role": "Hero/Villain/etc", "description": "appearance and personality in 1-2 sentences" }
+  ],
+  "scenes": [
+    {
+      "sceneNumber": 1,
+      "title": "Scene Title",
+      "setting": "Where and when this scene takes place",
+      "imagePrompt": "A detailed visual prompt for AI image generation, describing the scene like a painting",
+      "narration": "2-3 sentence narrator description of what happens",
+      "dialogue": [
+        { "speaker": "CharacterName", "line": "What they say" }
+      ]
+    }
+  ]
+}
+
+Make it dramatic, emotional, and distinctly anime in style. Include at least 2 characters.`;
+
+    const rawStory = await callGemini(storyPrompt);
+    setProgress(35, 1, 2);
+
+    // Parse JSON
+    let episode;
+    try {
+      const jsonMatch = rawStory.match(/\{[\s\S]*\}/);
+      episode = JSON.parse(jsonMatch ? jsonMatch[0] : rawStory);
+    } catch {
+      throw new Error('AI returned invalid format. Try again.');
+    }
+
+    episode.id = Date.now().toString();
+    episode.createdAt = new Date().toISOString();
+    episode.votes = 0;
+    episode.views = 0;
+    episode.thumbColors = [
+      'linear-gradient(135deg, #1a0a2e, #0d1a3a)',
+      'linear-gradient(135deg, #1a0a0a, #2a1010)',
+      'linear-gradient(135deg, #0a1a0a, #0d2a1a)',
+      'linear-gradient(135deg, #1a1a0a, #2a2a10)',
+    ];
+    episode.thumbColor = episode.thumbColors[Math.floor(Math.random() * episode.thumbColors.length)];
+
+    setProgress(45, 2, 3);
+
+    // ---- STEP 2: Generate images for each scene ----
+    const hfKey = localStorage.getItem('aniforge_hf_key');
+    if (hfKey && episode.scenes) {
+      // Show partial UI while generating images
+      renderPartialResult(episode);
+
+      for (let i = 0; i < episode.scenes.length; i++) {
+        const scene = episode.scenes[i];
+        const imgUrl = await generateAnimeImage(scene.imagePrompt || scene.setting);
+        if (imgUrl) {
+          scene.imageUrl = imgUrl;
+          updateSceneImage(i, imgUrl);
+        }
+        const pct = 45 + ((i + 1) / episode.scenes.length) * 35;
+        setProgress(Math.round(pct), null, 3);
+      }
+    }
+
+    setProgress(85, 3, 4);
+
+    // ---- STEP 3: Save ----
+    const episodes = JSON.parse(localStorage.getItem('aniforge_episodes') || '[]');
+    episodes.push(episode);
+    localStorage.setItem('aniforge_episodes', JSON.stringify(episodes));
+    currentEpisode = episode;
+
+    setProgress(100, 4, null);
+
+    // Transition to result
+    setTimeout(() => {
+      document.getElementById('progress-section').classList.remove('active');
+      renderFullResult(episode);
+      document.getElementById('result-section').classList.add('active');
+    }, 600);
+
+  } catch (err) {
+    showToast('❌ ' + err.message, 6000);
+    document.getElementById('progress-section').classList.remove('active');
+    document.getElementById('idle-state').style.display = 'flex';
+  } finally {
+    forgeBtn.disabled = false;
+  }
+}
+
+// ============================================================
+// RENDER FUNCTIONS
+// ============================================================
+function renderPartialResult(ep) {
+  document.getElementById('progress-section').classList.remove('active');
+  renderFullResult(ep);
+  document.getElementById('result-section').classList.add('active');
+}
+
+function renderFullResult(ep) {
+  const castHtml = (ep.characters || []).map(c => `
+    <div class="char-card">
+      <div class="char-avatar">${c.name.charAt(0)}</div>
+      <div class="char-name">${c.name}</div>
+      <div class="char-role">${c.role}</div>
+      <div class="char-desc">${c.description || ''}</div>
+    </div>
+  `).join('');
+
+  const scenesHtml = (ep.scenes || []).map((s, i) => `
+    <div class="scene-block" id="scene-block-${i}" style="animation-delay:${i * 0.1}s">
+      <div class="scene-header">
+        <span class="scene-num">SCENE ${String(s.sceneNumber || i+1).padStart(2,'0')}</span>
+        <span class="scene-title">${s.title || ''}</span>
+      </div>
+      <div class="scene-body">
+        <div class="scene-img-wrap" id="scene-img-${i}">
+          <div class="img-loading">
+            <div class="spinner"></div>
+            Generating anime image...
+          </div>
+        </div>
+        <div class="scene-content">
+          <div class="scene-narration">${s.narration || ''}</div>
+          ${s.setting ? `<div style="font-size:0.72rem;opacity:0.4;font-family:'Space Mono',monospace;margin-bottom:1rem;">📍 ${s.setting}</div>` : ''}
+          <div class="scene-dialogue">
+            ${(s.dialogue || []).map(d => `
+              <div class="dialogue-line">
+                <div class="dialogue-speaker">${d.speaker}</div>
+                <div>"${d.line}"</div>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      </div>
+    </div>
+  `).join('');
+
+  document.getElementById('result-section').innerHTML = `
+    <div class="ep-header">
+      <div class="ep-badge">AI FORGED EPISODE</div>
+      <div class="ep-main-title">${ep.title}</div>
+      <div class="ep-synopsis">${ep.synopsis}</div>
+      <div class="ep-meta-row">
+        <div class="ep-meta-item"><strong>Genre</strong>${ep.genre}</div>
+        <div class="ep-meta-item"><strong>Scenes</strong>${(ep.scenes || []).length}</div>
+        <div class="ep-meta-item"><strong>Cast</strong>${(ep.characters || []).length} characters</div>
+        <div class="ep-meta-item"><strong>Forged</strong>${new Date(ep.createdAt).toLocaleString()}</div>
+      </div>
+    </div>
+
+    <div class="cast-section">
+      <div class="section-label">Cast & Characters</div>
+      <div class="cast-grid">${castHtml}</div>
+    </div>
+
+    <div class="scenes-section">
+      <div class="section-label">Scenes</div>
+      ${scenesHtml}
+    </div>
+
+    <div class="result-actions">
+      <a href="watch.html?id=${ep.id}" class="btn-watch" target="_blank">▶ Watch Episode</a>
+      <button class="btn-save" onclick="showToast('✅ Saved to browser storage!')">💾 Saved</button>
+      <button class="btn-log" onclick="logOnchain()">⛓️ Log on Base</button>
+    </div>
+  `;
+}
+
+function updateSceneImage(sceneIndex, imageUrl) {
+  const wrap = document.getElementById('scene-img-' + sceneIndex);
+  if (!wrap) return;
+  wrap.innerHTML = `<img class="scene-img" src="${imageUrl}" alt="Scene ${sceneIndex + 1}">`;
+}
+
+// ============================================================
+// LOG ONCHAIN
+// ============================================================
+async function logOnchain() {
+  if (!currentEpisode) return;
+  if (!walletAddress) {
+    showToast('⚠️ Connect wallet first to log onchain!');
+    return;
+  }
+  try {
+    showToast('⛓️ Logging episode to Base Sepolia...');
+    const provider = new ethers.providers.Web3Provider(window.ethereum);
+    const signer = provider.getSigner();
+    const meta = JSON.stringify({ id: currentEpisode.id, title: currentEpisode.title });
+    const data = ethers.utils.hexlify(ethers.utils.toUtf8Bytes(meta));
+    const tx = await signer.sendTransaction({
+      to: walletAddress,
+      value: ethers.utils.parseEther('0'),
+      data: data.slice(0, 66)
+    });
+    showToast('✅ Onchain! TX: ' + tx.hash.slice(0,16) + '...', 6000);
+  } catch (e) {
+    showToast('❌ TX failed: ' + e.message);
+  }
+}
+</script>
+</body>
+</html>
